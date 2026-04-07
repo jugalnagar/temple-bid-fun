@@ -1,0 +1,1510 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🕉️ श्री मंदिर उद्घाटन महोत्सव</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --saffron: #D4500A;
+      --saffron2: #FF7722;
+      --gold: #FFD700;
+      --gold2: #C9A000;
+      --maroon: #7B0020;
+      --maroon2: #A50028;
+      --cream: #FFFBF0;
+      --cream2: #F5EDD8;
+      --brown: #8B4513;
+      --text: #2C1810;
+      --textl: #6B3A2A;
+      --white: #fff;
+      --green: #2D6A4F;
+      --greenl: #52B788;
+      --border: rgba(139,69,19,0.18);
+      --sh: 0 2px 12px rgba(139,69,19,0.14);
+      --shl: 0 6px 28px rgba(139,69,19,0.22);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 76px;
+      overflow-x: hidden;
+    }
+
+    /* ─── TOP HEADER ─── */
+    .top-header {
+      background: linear-gradient(135deg, #3B0010 0%, var(--maroon) 45%, var(--saffron2) 100%);
+      color: var(--white);
+      text-align: center;
+      padding: 14px 16px 10px;
+      position: sticky; top: 0; z-index: 60;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.35);
+    }
+    .header-deco { font-size: .78rem; letter-spacing: 4px; opacity: .75; margin-bottom: 2px; }
+    .header-om { font-size: 2rem; line-height: 1; display: block; }
+    .header-title { font-size: 1.05rem; font-weight: 800; letter-spacing: .3px; line-height: 1.35; }
+    .header-sub { font-size: .7rem; opacity: .88; margin-top: 3px; }
+
+    /* ─── BOTTOM NAV ─── */
+    .bnav {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--white);
+      display: flex;
+      border-top: 2.5px solid var(--saffron2);
+      z-index: 100;
+      box-shadow: 0 -2px 12px rgba(0,0,0,0.1);
+    }
+    .bnav-btn {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; padding: 6px 2px; font-size: .58rem;
+      color: var(--textl); cursor: pointer; border: none; background: none;
+      gap: 1px; transition: color .2s;
+    }
+    .bnav-btn .ni { font-size: 1.35rem; transition: transform .2s; }
+    .bnav-btn.active { color: var(--saffron); }
+    .bnav-btn.active .ni { transform: scale(1.15); }
+
+    /* ─── PAGES ─── */
+    .page { display: none; padding: 14px; }
+    .page.active { display: block; }
+
+    /* ─── SECTION HEADER ─── */
+    .sec-head {
+      background: linear-gradient(135deg, var(--saffron), var(--saffron2));
+      color: var(--white); padding: 12px 16px; border-radius: 12px;
+      margin-bottom: 14px; text-align: center;
+    }
+    .sec-head h2 { font-size: 1.05rem; font-weight: 800; }
+    .sec-head p { font-size: .75rem; opacity: .9; margin-top: 3px; }
+
+    /* ─── HOME ─── */
+    .slider-wrap {
+      position: relative; border-radius: 16px; overflow: hidden;
+      margin-bottom: 14px; height: 210px; box-shadow: var(--shl);
+    }
+    .slide { position: absolute; inset: 0; opacity: 0; transition: opacity .8s; }
+    .slide.active { opacity: 1; }
+    .slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .slide-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.62) 0%, transparent 55%);
+    }
+    .slide-text { position: absolute; bottom: 10px; left: 12px; right: 12px; color: #fff; }
+    .slide-text h3 { font-size: 1rem; font-weight: 700; }
+    .slide-text p { font-size: .72rem; opacity: .9; }
+    .sdots { position: absolute; bottom: 8px; right: 10px; display: flex; gap: 5px; }
+    .sdot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,.45); cursor: pointer; transition: all .2s; }
+    .sdot.active { background: #fff; transform: scale(1.3); }
+
+    /* No-image fallback placeholder */
+    .slide-placeholder {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: rgba(255,255,255,.85); font-size: .85rem;
+    }
+    .slide-placeholder .pi { font-size: 3rem; margin-bottom: 6px; }
+
+    .countdown-card {
+      background: linear-gradient(135deg, var(--maroon), #3B0010);
+      color: #fff; border-radius: 12px; padding: 14px 12px; text-align: center;
+      margin-bottom: 14px; box-shadow: var(--shl);
+    }
+    .countdown-card h3 { font-size: .82rem; opacity: .9; margin-bottom: 9px; }
+    .cd-boxes { display: flex; justify-content: center; gap: 8px; }
+    .cd-box { background: rgba(255,255,255,.15); border-radius: 8px; padding: 8px 10px; min-width: 58px; }
+    .cd-box .n { font-size: 1.55rem; font-weight: 800; line-height: 1; }
+    .cd-box .u { font-size: .58rem; opacity: .8; margin-top: 2px; }
+
+    .info-card {
+      background: var(--white); border-radius: 12px; padding: 14px;
+      margin-bottom: 12px; box-shadow: var(--sh); border-left: 4px solid var(--saffron2);
+    }
+    .info-card h3 { font-size: .95rem; color: var(--maroon); font-weight: 700; margin-bottom: 9px; display: flex; align-items: center; gap: 5px; }
+    .irow { display: flex; gap: 8px; margin-bottom: 6px; font-size: .82rem; align-items: flex-start; }
+    .irow .lbl { color: var(--textl); min-width: 72px; flex-shrink: 0; }
+    .irow .val { font-weight: 600; }
+
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .stat-card {
+      background: var(--white); border-radius: 12px; padding: 13px 10px;
+      text-align: center; box-shadow: var(--sh); border-top: 3px solid var(--gold);
+    }
+    .stat-card .bn { font-size: 1.8rem; font-weight: 800; color: var(--saffron); }
+    .stat-card .sl { font-size: .68rem; color: var(--textl); margin-top: 1px; }
+
+    .quick-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 6px; }
+
+    /* ─── TIMELINE ─── */
+    .tl { position: relative; padding-left: 26px; }
+    .tl::before {
+      content: ''; position: absolute; left: 9px; top: 0; bottom: 0;
+      width: 2px; background: linear-gradient(to bottom, var(--saffron), var(--gold));
+    }
+    .tl-item {
+      position: relative; margin-bottom: 14px; background: var(--white);
+      border-radius: 10px; padding: 11px 13px; box-shadow: var(--sh);
+    }
+    .tl-item::before {
+      content: ''; position: absolute; left: -21px; top: 13px;
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--saffron); border: 2px solid var(--gold);
+      box-shadow: 0 0 0 3px rgba(212,80,10,.2);
+    }
+    .tl-item.done::before { background: var(--green); border-color: var(--greenl); }
+    .tl-date { font-size: .68rem; color: var(--saffron); font-weight: 700; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 2px; }
+    .tl-title { font-size: .88rem; font-weight: 700; margin-bottom: 2px; }
+    .tl-desc { font-size: .76rem; color: var(--textl); line-height: 1.4; }
+    .badge { display: inline-block; font-size: .62rem; padding: 2px 7px; border-radius: 10px; margin-top: 5px; font-weight: 700; }
+    .b-up { background: #FFF3CD; color: #856404; }
+    .b-main { background: #F8D7DA; color: #721C24; }
+    .b-done { background: #D4EDDA; color: #155724; }
+
+    /* ─── KUNDIS ─── */
+    .legend { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+    .leg-item { display: flex; align-items: center; gap: 4px; font-size: .7rem; color: var(--textl); }
+    .leg-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+    .kundi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+    .kc {
+      background: var(--white); border-radius: 13px; overflow: hidden;
+      box-shadow: var(--sh); border: 1px solid var(--border);
+    }
+    .kc-head {
+      padding: 7px 9px; color: #fff;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .kc-num { font-size: .82rem; font-weight: 800; }
+    .kc-count { font-size: .75rem; font-weight: 700; }
+    .kc-body { padding: 7px; }
+
+    .slot {
+      display: flex; align-items: center; gap: 5px;
+      padding: 5px 6px; border-radius: 7px; margin-bottom: 3px;
+      font-size: .7rem;
+    }
+    .slot:last-child { margin-bottom: 0; }
+    .slot-ic { font-size: .88rem; flex-shrink: 0; }
+    .slot-inf { flex: 1; min-width: 0; }
+    .slot-type { font-size: .56rem; font-weight: 700; color: var(--textl); text-transform: uppercase; }
+    .slot-name { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
+    .slot-amt { font-size: .62rem; color: var(--saffron); font-weight: 700; }
+    .slot-badge { font-size: .52rem; padding: 2px 5px; border-radius: 7px; font-weight: 700; flex-shrink: 0; white-space: nowrap; }
+
+    .s-filled { background: #E8F5E9; }
+    .s-reserved { background: #FFF3E0; }
+    .s-empty { background: #F5F5F5; }
+    .sb-filled { background: #C8E6C9; color: #2E7D32; }
+    .sb-reserved { background: #FFE0B2; color: #E65100; }
+    .sb-open { background: #EDE7F6; color: #512DA8; }
+
+    @keyframes pulse-open {
+      0%,100% { box-shadow: 0 0 0 0 rgba(212,80,10,.35); }
+      50% { box-shadow: 0 0 0 5px rgba(212,80,10,0); }
+    }
+    .pulse-open { animation: pulse-open 2.2s infinite; }
+
+    /* ─── PRADHAN KUND ─── */
+    @keyframes gold-glow {
+      0%,100% { box-shadow: 0 0 10px rgba(255,215,0,.5), var(--sh); }
+      50% { box-shadow: 0 0 22px rgba(255,215,0,.85), var(--sh); }
+    }
+    .kc.pradhan { border: 2.5px solid var(--gold); animation: gold-glow 2.5s ease-in-out infinite; }
+    .pradhan-crown {
+      display: block; text-align: center; padding: 4px 8px;
+      background: linear-gradient(90deg, #7B0020, #C9A000, var(--gold), #C9A000, #7B0020);
+      background-size: 200% auto; animation: shimmer 3s linear infinite;
+      font-size: .66rem; font-weight: 800; color: #fff; letter-spacing: 2px;
+    }
+
+    /* ─── SHIKHARS ─── */
+    .shk-card {
+      background: var(--white); border-radius: 14px; overflow: hidden;
+      box-shadow: var(--sh); margin-bottom: 14px; border: 1px solid var(--border);
+    }
+    .shk-head {
+      background: linear-gradient(135deg, var(--maroon), #3B0010);
+      padding: 13px 15px; color: #fff; display: flex; align-items: center; gap: 10px;
+    }
+    .shk-icon { font-size: 1.9rem; }
+    .shk-title { font-size: .98rem; font-weight: 800; }
+    .shk-sub { font-size: .72rem; opacity: .85; }
+    .shk-body { padding: 13px; }
+
+    .bid-current {
+      background: linear-gradient(135deg, var(--cream), var(--cream2));
+      border-radius: 10px; padding: 11px; margin-bottom: 11px;
+      border: 2px solid var(--gold);
+    }
+    .bid-lbl { font-size: .66rem; color: var(--textl); text-transform: uppercase; font-weight: 700; margin-bottom: 3px; }
+    .bid-name { font-size: 1.05rem; font-weight: 800; color: var(--maroon); }
+    .bid-amount { font-size: 1.25rem; font-weight: 800; color: var(--saffron); }
+    .bid-time { font-size: .66rem; color: var(--textl); margin-top: 3px; }
+
+    .bid-hist h4 { font-size: .7rem; color: var(--textl); text-transform: uppercase; font-weight: 700; margin-bottom: 7px; }
+    .brow {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 9px; border-radius: 8px; margin-bottom: 5px;
+    }
+    .brow.cur { background: #E8F5E9; }
+    .brow.old { background: #F5F5F5; opacity: .45; }
+    .brow-name { flex: 1; font-size: .8rem; font-weight: 600; }
+    .brow-amt { font-size: .83rem; font-weight: 700; color: var(--saffron); }
+    .brow-t { font-size: .63rem; color: var(--textl); }
+
+    /* ─── ADMIN ─── */
+    .adm-sec {
+      background: var(--white); border-radius: 14px; padding: 15px;
+      box-shadow: var(--sh); margin-bottom: 13px;
+    }
+    .adm-sec h3 {
+      font-size: .88rem; color: var(--maroon); font-weight: 700;
+      margin-bottom: 11px; padding-bottom: 7px;
+      border-bottom: 2px solid var(--cream2);
+      display: flex; align-items: center; gap: 5px;
+    }
+    .fg { margin-bottom: 11px; }
+    .fg label { display: block; font-size: .76rem; font-weight: 700; color: var(--textl); margin-bottom: 4px; }
+    .fg select, .fg input {
+      width: 100%; padding: 9px 11px;
+      border: 2px solid var(--border); border-radius: 8px;
+      font-size: .83rem; color: var(--text); background: var(--cream);
+      transition: border-color .2s; -webkit-appearance: none; appearance: none;
+    }
+    .fg select:focus, .fg input:focus { outline: none; border-color: var(--saffron2); }
+
+    .btn {
+      width: 100%; padding: 12px; border: none; border-radius: 10px;
+      font-size: .88rem; font-weight: 700; cursor: pointer; transition: all .15s;
+      color: #fff; margin-top: 3px;
+    }
+    .btn:active { transform: scale(.98); }
+    .btn-saffron { background: linear-gradient(135deg, var(--saffron), var(--saffron2)); }
+    .btn-maroon  { background: linear-gradient(135deg, var(--maroon), #3B0010); }
+    .btn-green   { background: linear-gradient(135deg, #2E7D32, #43A047); }
+    .btn-red     { background: linear-gradient(135deg, #B71C1C, #E53935); }
+
+    .abid-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 11px; border-radius: 9px; margin-bottom: 6px;
+      border: 1px solid var(--border);
+    }
+    .abid-item.cur { background: #E8F5E9; border-color: #A5D6A7; }
+    .abid-item.old { background: #F8F8F8; opacity: .42; }
+    .abid-info { flex: 1; min-width: 0; }
+    .abid-title { font-size: .8rem; font-weight: 700; }
+    .abid-meta { font-size: .65rem; color: var(--textl); }
+    .abid-amt { font-size: .88rem; font-weight: 700; color: var(--saffron); flex-shrink: 0; }
+    .btn-del {
+      background: #FFEBEE; color: #C62828; border: none;
+      border-radius: 6px; padding: 4px 8px; font-size: .68rem; cursor: pointer; flex-shrink: 0;
+    }
+
+    /* ─── TOAST ─── */
+    .toast {
+      position: fixed; top: 76px; left: 50%;
+      transform: translateX(-50%) translateY(-14px);
+      background: rgba(44,24,16,.92); color: #fff;
+      padding: 9px 20px; border-radius: 20px; font-size: .8rem;
+      z-index: 200; opacity: 0; transition: all .28s; white-space: nowrap;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ─── EMPTY STATE ─── */
+    .empty { text-align: center; padding: 22px; color: var(--textl); }
+    .empty .ei { font-size: 2.4rem; margin-bottom: 7px; }
+    .empty p { font-size: .8rem; }
+
+    @media (max-width: 360px) {
+      .kundi-grid { grid-template-columns: 1fr; }
+    }
+    @media (min-width: 600px) {
+      body { max-width: 600px; margin: 0 auto; }
+      .bnav { max-width: 600px; left: 50%; transform: translateX(-50%); right: auto; width: 600px; }
+    }
+
+    /* Gold shimmer for page titles */
+    @keyframes shimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }
+    .gold-txt {
+      background: linear-gradient(90deg, var(--gold2), var(--gold), var(--gold2));
+      background-size: 200% auto; -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent; animation: shimmer 3s linear infinite;
+    }
+
+    /* ─── KUND DETAIL CARDS (shikhar-style) ─── */
+    #kundiGrid { display:block; }
+    .kund-card { background:var(--white); border-radius:14px; overflow:hidden; box-shadow:var(--sh); margin-bottom:14px; border:1px solid var(--border); }
+    .kund-card.pradhan { border:2.5px solid var(--gold); animation: gold-glow 2.5s ease-in-out infinite; }
+    .kund-hd { padding:12px 14px; color:#fff; display:flex; align-items:center; justify-content:space-between; }
+    .kund-hd-info .kt { font-size:.95rem; font-weight:800; }
+    .kund-hd-info .ks { font-size:.7rem; opacity:.85; margin-top:1px; }
+    .kund-hd-pill { background:rgba(255,255,255,.22); border-radius:20px; padding:4px 11px; font-size:.78rem; font-weight:700; }
+
+    .kund-sect { padding:11px 13px; border-bottom:1px solid var(--border); }
+    .kund-sect:last-child { border-bottom:none; }
+    .kund-sect-lbl { font-size:.63rem; font-weight:800; text-transform:uppercase; color:var(--textl); letter-spacing:.6px; margin-bottom:8px; }
+
+    .kund-cur { border-radius:9px; padding:10px 12px; margin-bottom:6px; border:2px solid var(--gold); background:linear-gradient(135deg,var(--cream),var(--cream2)); position:relative; }
+    .kund-cur .lbl { font-size:.6rem; color:var(--textl); text-transform:uppercase; font-weight:700; margin-bottom:2px; }
+    .kund-cur .nm  { font-size:.95rem; font-weight:800; color:var(--maroon); padding-right:56px; }
+    .kund-cur .am  { font-size:1.1rem; font-weight:800; color:var(--saffron); }
+    .kund-cur .tm  { font-size:.6rem; color:var(--textl); margin-top:3px; }
+    .kund-cur-reserved { border-color:var(--gold2); background:linear-gradient(135deg,#FFF3E0,#FFE0B2); }
+    .kund-cur-edt { position:absolute; top:8px; right:8px; background:rgba(255,255,255,.75); border:1px solid rgba(21,101,192,.3); border-radius:7px; padding:4px 9px; font-size:.68rem; color:#1565C0; cursor:pointer; font-weight:700; }
+
+    /* History inside kund card */
+    .kund-hist { margin-top:8px; }
+    .kund-hist-lbl { font-size:.62rem; color:var(--textl); text-transform:uppercase; font-weight:700; margin-bottom:5px; letter-spacing:.4px; }
+    .kund-hist-row { display:flex; align-items:center; gap:7px; padding:5px 8px; border-radius:7px; background:#F5F5F5; opacity:.4; margin-bottom:4px; }
+    .kund-hist-row .n { flex:1; font-size:.74rem; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .kund-hist-row .a { font-size:.74rem; font-weight:700; color:var(--saffron); flex-shrink:0; }
+    .kund-hist-row .t { font-size:.58rem; color:var(--textl); flex-shrink:0; }
+    .kund-hist-row .ebt { background:#E3F2FD; color:#1565C0; border:none; border-radius:5px; padding:2px 7px; font-size:.6rem; cursor:pointer; flex-shrink:0; }
+
+    /* Til-Joo rows */
+    .tj-row { display:flex; align-items:center; gap:7px; padding:7px 0; border-bottom:1px dashed rgba(139,69,19,.1); }
+    .tj-row:last-child { border-bottom:none; }
+    .tj-row .lbl { font-size:.62rem; color:var(--textl); font-weight:700; min-width:62px; flex-shrink:0; }
+    .tj-row .nm  { flex:1; font-size:.78rem; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .tj-row .am  { font-size:.72rem; font-weight:700; color:var(--saffron); flex-shrink:0; }
+    .tj-row .bd  { font-size:.52rem; padding:2px 5px; border-radius:6px; font-weight:700; flex-shrink:0; }
+    .tj-hist-row { display:flex; gap:6px; padding:3px 6px; border-radius:5px; background:#F5F5F5; opacity:.4; margin-bottom:3px; font-size:.68rem; }
+    .tj-hist-row .n { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .tj-hist-row .a { font-weight:700; color:var(--saffron); flex-shrink:0; }
+    .tj-hist-row .ebt { background:#E3F2FD; color:#1565C0; border:none; border-radius:5px; padding:2px 7px; font-size:.6rem; cursor:pointer; flex-shrink:0; }
+
+    /* ─── EDIT MODAL (bottom sheet) ─── */
+    .edit-overlay { position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:160; display:none; align-items:flex-end; }
+    .edit-overlay.open { display:flex; }
+    .edit-sheet { background:var(--white); border-radius:18px 18px 0 0; padding:18px 16px 32px; width:100%; max-height:88vh; overflow-y:auto; box-shadow:0 -8px 32px rgba(0,0,0,.2); }
+    @media (min-width:600px) { .edit-sheet { max-width:600px; margin:0 auto; } }
+    .edit-title { font-size:.92rem; font-weight:800; color:var(--maroon); margin-bottom:13px; display:flex; align-items:center; gap:6px; border-bottom:2px solid var(--cream2); padding-bottom:9px; }
+    .edit-close { margin-left:auto; background:var(--cream2); border:none; border-radius:8px; padding:5px 12px; cursor:pointer; font-size:.78rem; font-weight:600; }
+    .edit-ctx { background:var(--cream2); border-radius:8px; padding:8px 11px; margin-bottom:12px; font-size:.78rem; color:var(--textl); font-weight:600; }
+
+    /* Edit button inside admin bid rows */
+    .btn-edit { background:#E3F2FD; color:#1565C0; border:none; border-radius:6px; padding:4px 8px; font-size:.68rem; cursor:pointer; flex-shrink:0; }
+  </style>
+</head>
+<body>
+
+<!-- TOP HEADER -->
+<div class="top-header">
+  <div class="header-deco">🌸 ॐ 🪔 ॐ 🌸</div>
+  <span class="header-om">🕉️</span>
+  <div class="header-title" id="hTitle">श्री मंदिर उद्घाटन महोत्सव</div>
+  <div class="header-sub">प्राण प्रतिष्ठा एवं 11 कुण्डीय महायज्ञ</div>
+</div>
+
+<main>
+
+<!-- ════════════════════════════════
+     HOME
+════════════════════════════════ -->
+<div id="page-home" class="page active">
+
+  <!-- Slider -->
+  <div class="slider-wrap">
+    <div class="slide active" id="sl0">
+      <img src="Image.jpg" alt="Temple"
+           onerror="this.parentNode.innerHTML='<div class=\'slide-placeholder\' style=\'background:linear-gradient(135deg,#7B0020,#D4500A)\'><div class=\'pi\'>🏛️</div><span>श्री मंदिर</span></div>'">
+      <div class="slide-overlay"></div>
+      <div class="slide-text"><h3>🏛️ नवनिर्मित श्री मंदिर</h3><p>भव्य उद्घाटन महोत्सव</p></div>
+    </div>
+    <div class="slide" id="sl1">
+      <img src="Image (1).jpg" alt="Temple"
+           onerror="this.parentNode.innerHTML='<div class=\'slide-placeholder\' style=\'background:linear-gradient(135deg,#D4500A,#FF7722)\'><div class=\'pi\'>🔥</div><span>11 कुण्डीय महायज्ञ</span></div>'">
+      <div class="slide-overlay"></div>
+      <div class="slide-text"><h3>🔥 11 कुण्डीय महायज्ञ</h3><p>घी एवं तिल-जौ आहुति</p></div>
+    </div>
+    <div class="slide" id="sl2">
+      <img src="Image (2).jpg" alt="Temple"
+           onerror="this.parentNode.innerHTML='<div class=\'slide-placeholder\' style=\'background:linear-gradient(135deg,#3B0010,#7B0020)\'><div class=\'pi\'>🪔</div><span>प्राण प्रतिष्ठा</span></div>'">
+      <div class="slide-overlay"></div>
+      <div class="slide-text"><h3>🪔 प्राण प्रतिष्ठा</h3><p>मूर्ति स्थापना एवं अभिषेक</p></div>
+    </div>
+    <div class="sdots">
+      <div class="sdot active" onclick="goSlide(0)"></div>
+      <div class="sdot" onclick="goSlide(1)"></div>
+      <div class="sdot" onclick="goSlide(2)"></div>
+    </div>
+  </div>
+
+  <!-- Countdown -->
+  <div class="countdown-card">
+    <h3>🗓️ महोत्सव प्रारंभ में</h3>
+    <div class="cd-boxes">
+      <div class="cd-box"><div class="n" id="cd-d">--</div><div class="u">दिन</div></div>
+      <div class="cd-box"><div class="n" id="cd-h">--</div><div class="u">घंटे</div></div>
+      <div class="cd-box"><div class="n" id="cd-m">--</div><div class="u">मिनट</div></div>
+      <div class="cd-box"><div class="n" id="cd-s">--</div><div class="u">सेकंड</div></div>
+    </div>
+  </div>
+
+  <!-- Event Info -->
+  <div class="info-card">
+    <h3>🏠 कार्यक्रम विवरण</h3>
+    <div class="irow"><span class="lbl">📍 स्थान:</span><span class="val" id="i-village">[गाँव का नाम]</span></div>
+    <div class="irow"><span class="lbl">📅 दिनांक:</span><span class="val" id="i-dates">[तारीख यहाँ]</span></div>
+    <div class="irow"><span class="lbl">🕐 समय:</span><span class="val">प्रातः 6 बजे से</span></div>
+    <div class="irow"><span class="lbl">🙏 मुख्य:</span><span class="val">प्राण प्रतिष्ठा एवं 11 कुण्डीय महायज्ञ</span></div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stat-grid">
+    <div class="stat-card"><div class="bn">11</div><div class="sl">🔥 यज्ञ कुण्ड</div></div>
+    <div class="stat-card"><div class="bn" id="st-slots">0</div><div class="sl">✅ भरे स्लॉट</div></div>
+    <div class="stat-card"><div class="bn">3</div><div class="sl">🏛️ शिखर</div></div>
+    <div class="stat-card"><div class="bn" id="st-shk">0</div><div class="sl">💰 शिखर बोलियाँ</div></div>
+  </div>
+
+  <!-- Quick nav -->
+  <div class="quick-btns">
+    <button class="btn btn-saffron" onclick="showPage('kundis')">🔥 कुण्ड स्थिति</button>
+    <button class="btn btn-maroon" onclick="showPage('shikhars')">🏛️ शिखर बोली</button>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════
+     TIMELINE
+════════════════════════════════ -->
+<div id="page-timeline" class="page">
+  <div class="sec-head"><h2>📅 कार्यक्रम की रूपरेखा</h2><p>उद्घाटन महोत्सव की संपूर्ण समय-सारिणी</p></div>
+
+  <div class="tl">
+    <div class="tl-item done">
+      <div class="tl-date">पूर्व तैयारी</div>
+      <div class="tl-title">🪴 भूमि पूजन एवं संकल्प</div>
+      <div class="tl-desc">निर्माण कार्य प्रारंभ — भूमि पूजन, संकल्प, गणेश जी की स्थापना।</div>
+      <span class="badge b-done">✅ पूर्ण</span>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">दिवस 1 · प्रातः 6:00</div>
+      <div class="tl-title">🚩 ध्वजारोहण एवं कलश स्थापना</div>
+      <div class="tl-desc">मंगल ध्वजारोहण, कलश स्थापना, पंचामृत अभिषेक, षोडशोपचार पूजन।</div>
+      <span class="badge b-up">⏰ आगामी</span>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">दिवस 1 · प्रातः 9:00</div>
+      <div class="tl-title">🎺 गणेश वंदना एवं महायज्ञ संकल्प</div>
+      <div class="tl-desc">विघ्नहर्ता श्री गणेश जी की स्तुति, नवग्रह पूजन एवं यज्ञ संकल्प।</div>
+      <span class="badge b-up">⏰ आगामी</span>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">दिवस 2-3 · प्रातः 8:00</div>
+      <div class="tl-title">🔥 11 कुण्डीय महायज्ञ</div>
+      <div class="tl-desc">11 यज्ञ कुण्डों में घी एवं तिल-जौ आहुति। 44 दम्पत्तियों को आहुति का पवित्र सौभाग्य। प्रत्येक कुण्ड पर 4 युगल।</div>
+      <span class="badge b-main">🌟 मुख्य कार्यक्रम</span>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">दिवस 3 · संध्या 4:00</div>
+      <div class="tl-title">🛁 मूर्ति स्नान एवं श्रृंगार</div>
+      <div class="tl-desc">प्रतिष्ठित होने वाली देव प्रतिमाओं का पंचामृत अभिषेक एवं विशेष श्रृंगार।</div>
+      <span class="badge b-up">⏰ आगामी</span>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">दिवस 4 · प्रातः 7:00</div>
+      <div class="tl-title">🙏 प्राण प्रतिष्ठा</div>
+      <div class="tl-desc">विद्वान पंडितों द्वारा वेदमंत्रोच्चार के साथ देव प्रतिमाओं में प्राण प्रतिष्ठा।</div>
+      <span class="badge b-main">🌟 मुख्य कार्यक्रम</span>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">दिवस 4 · मध्याह्न 12:00</div>
+      <div class="tl-title">🏛️ शिखर पूजन एवं ध्वज स्थापना</div>
+      <div class="tl-desc">तीनों शिखरों का विधिवत पूजन, कलश एवं ध्वज स्थापना। दानदाता परिवारों का सम्मान।</div>
+      <span class="badge b-up">⏰ आगामी</span>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">दिवस 4 · संध्या 6:00</div>
+      <div class="tl-title">🪔 महाआरती एवं प्रसाद वितरण</div>
+      <div class="tl-desc">भव्य महाआरती, भजन-कीर्तन एवं सम्पूर्ण ग्राम को महाप्रसाद वितरण।</div>
+      <span class="badge b-main">🌟 मुख्य कार्यक्रम</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════
+     KUNDIS
+════════════════════════════════ -->
+<div id="page-kundis" class="page">
+  <div class="sec-head">
+    <h2>🔥 11 कुण्डीय महायज्ञ</h2>
+    <p>प्रत्येक कुण्ड पर 4 दम्पत्तियों की आहुति</p>
+  </div>
+
+  <div class="legend">
+    <div class="leg-item"><div class="leg-dot" style="background:#66BB6A"></div><span>भरा हुआ</span></div>
+    <div class="leg-item"><div class="leg-dot" style="background:#FFA726"></div><span>आरक्षित</span></div>
+    <div class="leg-item"><div class="leg-dot" style="background:#9575CD"></div><span>बोली खुली</span></div>
+  </div>
+
+  <div id="kundiGrid">
+    <!-- Rendered by JS -->
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════
+     SHIKHARS
+════════════════════════════════ -->
+<div id="page-shikhars" class="page">
+  <div class="sec-head">
+    <h2>🏛️ शिखर एवं विशेष बोली</h2>
+    <p>कलश शिखर एवं भागवत आरती की वर्तमान बोली</p>
+  </div>
+  <div id="shikharList"><!-- JS --></div>
+</div>
+
+
+<!-- ════════════════════════════════
+     ADMIN
+════════════════════════════════ -->
+<div id="page-admin" class="page">
+  <div class="sec-head">
+    <h2>✏️ बोली प्रबंधन</h2>
+    <p>नई बोली जोड़ें · स्थिति अपडेट करें</p>
+  </div>
+
+  <!-- Kundi Form -->
+  <div class="adm-sec">
+    <h3>🔥 कुण्ड — बोली जोड़ें</h3>
+    <div class="fg">
+      <label>कुण्ड नंबर</label>
+      <select id="f-kn" onchange="refreshSlotOpts()">
+        <option value="">-- कुण्ड चुनें --</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label>स्लॉट प्रकार</label>
+      <select id="f-ks"><option value="">-- पहले कुण्ड चुनें --</option></select>
+    </div>
+    <div class="fg">
+      <label>परिवार / मुखिया का नाम <span style="color:red">*</span></label>
+      <input type="text" id="f-kname" placeholder="जैसे: राम प्रसाद शर्मा">
+    </div>
+    <div class="fg">
+      <label>दान राशि ₹ (वैकल्पिक)</label>
+      <input type="number" id="f-kamt" placeholder="जैसे: 1100">
+    </div>
+    <div class="fg">
+      <label>मोबाइल नंबर (वैकल्पिक)</label>
+      <input type="tel" id="f-kph" placeholder="9XXXXXXXXX">
+    </div>
+    <button class="btn btn-saffron" onclick="submitKundiBid()">✅ बोली सबमिट करें</button>
+  </div>
+
+  <!-- Shikhar Form -->
+  <div class="adm-sec">
+    <h3>🏛️ शिखर — बोली जोड़ें</h3>
+    <div class="fg">
+      <label>शिखर</label>
+      <select id="f-sn">
+        <option value="">-- शिखर चुनें --</option>
+        <option value="0">⛪ मुख्य कलश — बड़ा शिखर</option>
+        <option value="1">🏛️ मध्य कलश</option>
+        <option value="2">🏛️ अन्तिम कलश</option>
+        <option value="3">🙏 साम वाली भागवत जी आरती</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label>परिवार / मुखिया का नाम <span style="color:red">*</span></label>
+      <input type="text" id="f-sname" placeholder="जैसे: विनोद कुमार गुप्ता">
+    </div>
+    <div class="fg">
+      <label>बोली राशि ₹</label>
+      <input type="number" id="f-samt" placeholder="जैसे: 51000">
+    </div>
+    <div class="fg">
+      <label>मोबाइल नंबर (वैकल्पिक)</label>
+      <input type="tel" id="f-sph" placeholder="9XXXXXXXXX">
+    </div>
+    <button class="btn btn-maroon" onclick="submitShikharBid()">✅ बोली सबमिट करें</button>
+  </div>
+
+  <!-- All bids list -->
+  <div class="adm-sec">
+    <h3>📋 सभी बोलियाँ</h3>
+    <div id="allBids"><!-- JS --></div>
+  </div>
+
+  <!-- Settings -->
+  <div class="adm-sec">
+    <h3>⚙️ कार्यक्रम सेटिंग्स</h3>
+    <div class="fg">
+      <label>मंदिर का नाम</label>
+      <input type="text" id="s-tname" placeholder="श्री राम मंदिर">
+    </div>
+    <div class="fg">
+      <label>ग्राम का नाम</label>
+      <input type="text" id="s-vill" placeholder="ग्राम गोपालपुर, जिला …">
+    </div>
+    <div class="fg">
+      <label>मुख्य कार्यक्रम की तारीख (काउंटडाउन के लिए)</label>
+      <input type="date" id="s-date">
+    </div>
+    <div class="fg">
+      <label>तारीख का विवरण (प्रदर्शन के लिए)</label>
+      <input type="text" id="s-dtxt" placeholder="जैसे: 15-18 मार्च 2025">
+    </div>
+    <div class="fg">
+      <label>कुण्ड 10 — घी आहुति — ग्राम पटेल (आरक्षित)</label>
+      <input type="text" id="s-r10" placeholder="परिवार का नाम">
+    </div>
+    <div class="fg">
+      <label>कुण्ड 11 — घी आहुति — ग्राम पटेल (आरक्षित)</label>
+      <input type="text" id="s-r11" placeholder="परिवार का नाम">
+    </div>
+    <button class="btn btn-green" onclick="saveSettings()">💾 सेटिंग्स सहेजें</button>
+    <button class="btn btn-red" onclick="resetAll()" style="margin-top:8px">🗑️ सभी डेटा रीसेट करें</button>
+  </div>
+</div>
+
+</main>
+
+<!-- BOTTOM NAV -->
+<nav class="bnav">
+  <button class="bnav-btn active" id="nav-home"     onclick="showPage('home')">    <span class="ni">🏠</span><span>होम</span></button>
+  <button class="bnav-btn"        id="nav-timeline" onclick="showPage('timeline')"><span class="ni">📅</span><span>समय-सारणी</span></button>
+  <button class="bnav-btn"        id="nav-kundis"   onclick="showPage('kundis')">  <span class="ni">🔥</span><span>कुण्ड</span></button>
+  <button class="bnav-btn"        id="nav-shikhars" onclick="showPage('shikhars')"><span class="ni">🏛️</span><span>शिखर</span></button>
+  <button class="bnav-btn"        id="nav-admin"    onclick="showPage('admin')"   style="display:none">   <span class="ni">✏️</span><span>एडमिन</span></button>
+</nav>
+
+<!-- EDIT MODAL -->
+<div class="edit-overlay" id="editOverlay" onclick="if(event.target===this)closeEdit()">
+  <div class="edit-sheet">
+    <div class="edit-title">✏️ <span id="editTitle">बोली संपादित करें</span><button class="edit-close" onclick="closeEdit()">✕ बंद</button></div>
+    <div class="edit-ctx" id="editCtx"></div>
+    <div class="fg">
+      <label>परिवार / मुखिया का नाम <span style="color:red">*</span></label>
+      <input type="text" id="e-name" placeholder="नाम">
+    </div>
+    <div class="fg">
+      <label>राशि ₹</label>
+      <input type="number" id="e-amt" placeholder="राशि">
+    </div>
+    <div class="fg">
+      <label>मोबाइल नंबर</label>
+      <input type="tel" id="e-ph" placeholder="9XXXXXXXXX">
+    </div>
+    <button class="btn btn-green" onclick="saveEdit()">💾 सहेजें — अपडेट करें</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════
+   HELPERS & DATA VERSION
+═══════════════════════════════════════ */
+const DV = 3; // bump to force refresh of older localStorage
+
+const T  = (d) => new Date(d + 'T00:00:00').toISOString();
+const B  = (f, a, d) => ({ family:f, amount:a||0, phone:'', time: d ? T(d) : new Date().toISOString() });
+const BH = (f, a, st, d) => ({ family:f, amount:a||0, phone:'', time: d ? T(d) : T('2026-01-01'), st });
+
+/* ═══════════════════════════════════════
+   DATA MODEL (pre-populated with real data)
+═══════════════════════════════════════ */
+function mkData() {
+  return {
+    v: DV,
+    settings: {
+      templeName:    'श्री मंदिर',
+      village:       '[गाँव का नाम]',
+      eventDate:     '',
+      eventDatesText:'[तारीख यहाँ]',
+      reserved10:    'रामचन्द्र s/o मदनलाल जी पटेल सा.',
+      reserved11:    'कन्हैयालाल जी पटेल सा.',
+    },
+    kundis: [
+
+      // ════ कुण्ड 1 — प्रधान कुण्ड ════
+      { id:1, pradhan:true, gheeReserved:false,
+        gheeAhuti: B('डालचन्द जी ऊन्चरावदा कुण्ड वाला', 30100, '2026-03-06'),
+        tilJoo: [
+          B('अमृतलाल जी s/o भावसिंह जी',             28000),
+          B('नारायण सिंह s/o रतिराम जी',              25000),
+          B('शिवनारायण s/o रामचन्द्र जी कुण्डी',      25000),
+        ],
+        history: [
+          BH('हुकमसिंह सरपंच सा.',           15100, 'ghee', '2026-02-24'),
+          BH('कमल s/o भागीरथ जी',            21100, 'ghee', '2026-02-28'),
+          BH('हुकमसिंह जी सरपंच सा.',        25100, 'ghee', '2026-03-04'),
+          BH('केवललाल जी मकैनिका',           27500, 'ghee', '2026-03-04'),
+          BH('गोपीलाल जी s/o राधारिकान जी',  15000, 'tj0'),
+          BH('अमृतलाल जी s/o भवानी जी',      15000, 'tj0'),
+          BH('शिवनारायण जी s/o रामचन्द्र जी',24000, 'tj0'),
+          BH('रामसिंह s/o शिवनारायण जी',     21000, 'tj1'),
+          BH('शिवनारायण s/o गोपीलाल जी',     16100, 'tj1'),
+          BH('मदनसिंह s/o रतिराम जी',        22100, 'tj1'),
+          BH('रामसिंह s/o उदयसिंह जी कुण्डी',21000, 'tj2'),
+          BH('विश्वनाथ s/o गोपीलाल जी',      22200, 'tj2'),
+          BH('किशनलाल s/o गोपीलाल जी',       23200, 'tj2'),
+        ]
+      },
+
+      // ════ कुण्ड 2 ════
+      { id:2, pradhan:false, gheeReserved:false,
+        gheeAhuti: B('कालुचन्द पुत्र देविलाल जी चौधरी', 32000),
+        tilJoo: [
+          B('शिवप्रताप s/o मोतीलाल जी', 15000),
+          B('लक्ष्मण s/o नारायणजी',     12000),
+          B('भारतसिंह s/o बापुलाल',     11000),
+        ],
+        history: [
+          BH('पुनसिंह s/o रामनारायण जी',          25000, 'ghee'),
+          BH('देकरण जी s/o मथुरालाल जी सा.',       31000, 'ghee'),
+          BH('सेन्या s/o सत्यनारायण जी',           11000, 'tj1'),
+          BH('मल्हार s/o कुशललाल जी',              11000, 'tj1'),
+          BH('ऊमराव s/o कुशाललाल',                11000, 'tj2'),
+        ]
+      },
+
+      // ════ कुण्ड 3 ════
+      { id:3, pradhan:false, gheeReserved:false,
+        gheeAhuti: B('कमलकिशोर s/o भगीरथ जी', 35000),
+        tilJoo: [
+          B('रमेश s/o रामनारायण',                      11000),
+          B('कुमेर सिंह जी कृपावत मारसाहब',            11000),
+          B('आत्माराम s/o मोतीलाल जी मारसाहब',         15000),
+        ],
+        history: [
+          BH('रोहित नागर s/o शिवनारायण जी', 25000, 'ghee'),
+          BH('रामनारायण s/o रतिराम जी',      31000, 'ghee'),
+          BH('अंकित s/o विष्णुदत्त',         11200, 'tj0'),
+        ]
+      },
+
+      // ════ कुण्ड 4 ════
+      { id:4, pradhan:false, gheeReserved:false,
+        gheeAhuti: B('शिवलाल s/o प्रसादीजी चौधरी', 31000),
+        tilJoo: [
+          B('कन्हैयालाल जी s/o लक्ष्मीराम जी', 11000),
+          B('ऊदसिंह s/o कंवरलाल जी',            11000),
+          B('अशोक कुमार डा. हुकमसिंह',          11000),
+        ],
+        history: [
+          BH('शिवनारायण s/o गोपीलाल जी', 25000, 'ghee'),
+        ]
+      },
+
+      // ════ कुण्ड 5 ════
+      { id:5, pradhan:false, gheeReserved:false,
+        gheeAhuti: B('शिवनारायण जी s/o गोपीलाल जी', 31000),
+        tilJoo: [
+          B('कैलाशनारायण डा. मानसिंह मार.',         11000),
+          B('भागीरथ s/o नाथूलाल जी',               11000),
+          B('देकरण जी s/o मथुरालाल जी मण्डलोई',    11000),
+        ],
+        history: [
+          BH('बद्रीलाल s/o लक्ष्मीचन्द जी', 22000, 'ghee'),
+          BH('रामलाल s/o शिवनाथ जी',         25000, 'ghee'),
+        ]
+      },
+
+      // ════ कुण्ड 6 ════
+      { id:6, pradhan:false, gheeReserved:false,
+        gheeAhuti: B('फूलचन्द s/o रामनारायण जी', 31000),
+        tilJoo: [
+          B('बनवारी जी कुम्भकार s/o पन्नालाल जी', 11000),
+          B('कंवरलाल जी मेकिनिक साहब',             11000),
+          B('रमेशचन्द s/o बापुलाल जी पटेल',        11000),
+        ],
+        history: [
+          BH('अमृतलाल s/o भावसिंह जी', 25000, 'ghee'),
+        ]
+      },
+
+      // ════ कुण्ड 7 ════
+      { id:7, pradhan:false, gheeReserved:false,
+        gheeAhuti: B('रामचन्द्र s/o दौलतराम जी', 31000),
+        tilJoo: [
+          B('रामसिंह जी चौकीदार जी',  11000),
+          B('सिद्धनाथ जी कुम्भकार',   11000),
+          B('मनोहरलाल जी मस्त्री',    11000),
+        ],
+        history: [
+          BH('रामचन्द्र s/o दौलतराम जी', 22000, 'ghee'),
+          BH('देवीलाल s/o प्रभुलाल पटेल', 25000, 'ghee'),
+        ]
+      },
+
+      // ════ कुण्ड 8 ════
+      { id:8, pradhan:false, gheeReserved:false,
+        gheeAhuti: B('गोपीलाल s/o राधाकिशन जी', 31000),
+        tilJoo: [
+          B('अरविन्द जी s/o भागीरथ जी',                    9000),
+          B('बद्रीलाल जी s/o रामचन्द्र जी पटेल सा.',       11000),
+          B('जगननाथ जी s/o रामप्रसाद जी पटवारी',           11000),
+        ],
+        history: [
+          BH('सिरदारसिंह s/o बापुलाल जी', 25000, 'ghee'),
+        ]
+      },
+
+      // ════ कुण्ड 9 ════
+      { id:9, pradhan:false, gheeReserved:false,
+        gheeAhuti: B('हुकमसिंह s/o गगाधर जी पटेल सा.', 31000),
+        tilJoo: [
+          B('करणसिंह सैन',                        11000),
+          B('कैलाशनारायण s/o जयनारायण जी',        11000),
+          B('हरिनारायण s/o कंवरलाल जी',           12051),
+        ],
+        history: [
+          BH('रामसिंह s/o इंदरचन्द जी', 25000, 'ghee'),
+        ]
+      },
+
+      // ════ कुण्ड 10 — ग्राम पटेल आरक्षित ════
+      { id:10, pradhan:false, gheeReserved:true,
+        gheeAhuti: null, // set by syncReserved()
+        tilJoo: [
+          B('महेश मारसाहब',                 11000),
+          B('धनसिंह s/o जयनारायण',          11100),
+          B('शिवनारायण s/o भवरलाल',         11100),
+        ],
+        history: []
+      },
+
+      // ════ कुण्ड 11 — ग्राम पटेल आरक्षित ════
+      { id:11, pradhan:false, gheeReserved:true,
+        gheeAhuti: null, // set by syncReserved()
+        tilJoo: [
+          B('अमृतलाल पिता नाथूलाल जी धन्नाखेड़ा वाले', 11100),
+          B('भरत लाल s/o देवीलाल जी',                   11100),
+          B('कैलाशनारायण s/o अनोखसिंह जी लिसपून',       11100),
+        ],
+        history: []
+      },
+
+    ], // end kundis
+
+    shikhars: [
+      { id:1, name:'मुख्य कलश (बड़ा शिखर)',       icon:'⛪',
+        cur:  B('कमल s/o भागीरथ जी', 51000),
+        hist: [
+          B('कमलसिंह s/o भागीरथ जी',       22000),
+          B('बाबूलाल s/o शिवलाल चौधरी',    25000),
+        ]
+      },
+      { id:2, name:'मध्य कलश',                    icon:'🏛️',
+        cur:  B('रामलाल s/o मथुरालाल जी', 11500),
+        hist: []
+      },
+      { id:3, name:'अन्तिम कलश',                  icon:'🏛️',
+        cur:  B('गोपाल s/o कमलसिंह जी पटवारी', 5500),
+        hist: []
+      },
+      { id:4, name:'साम वाली भागवत जी आरती',      icon:'🙏',
+        cur:  B('रामनारायण जी s/o भवरलाल जी', 25000),
+        hist: [
+          B('बाबूलाल जी s/o शिवलाल जी चौधरी', 21000),
+        ]
+      },
+    ]
+  };
+}
+
+function load() {
+  try {
+    const raw = localStorage.getItem('td');
+    if (raw) {
+      const p = JSON.parse(raw);
+      if (p.v === DV) return p;
+    }
+  } catch(e) {}
+  return mkData();
+}
+function save(d) { localStorage.setItem('td', JSON.stringify(d)); }
+
+let D = load();
+
+function syncReserved() {
+  D.kundis[9].gheeAhuti  = { family: D.settings.reserved10 || 'ग्राम पटेल (आरक्षित)', amount:0, phone:'', time:'', reserved:true };
+  D.kundis[10].gheeAhuti = { family: D.settings.reserved11 || 'ग्राम पटेल (आरक्षित)', amount:0, phone:'', time:'', reserved:true };
+}
+syncReserved();
+
+/* ═══════════════════════════════════════
+   PAGE NAV
+═══════════════════════════════════════ */
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.getElementById('nav-'+name).classList.add('active');
+  window.scrollTo(0,0);
+  if (name === 'kundis')   renderKundis();
+  if (name === 'shikhars') renderShikhars();
+  if (name === 'admin')    { renderAdminBids(); loadSettingsForm(); initKundiOpts(); }
+  if (name === 'home')     updateStats();
+}
+
+/* ═══════════════════════════════════════
+   HERO SLIDER
+═══════════════════════════════════════ */
+let curSlide = 0;
+function goSlide(n) {
+  document.querySelectorAll('.slide').forEach((s,i) => s.classList.toggle('active', i===n));
+  document.querySelectorAll('.sdot').forEach((d,i) => d.classList.toggle('active', i===n));
+  curSlide = n;
+}
+setInterval(() => goSlide((curSlide + 1) % 3), 4200);
+
+/* ═══════════════════════════════════════
+   COUNTDOWN
+═══════════════════════════════════════ */
+function updateCD() {
+  const ds = D.settings.eventDate;
+  if (!ds) { ['d','h','m','s'].forEach(k => document.getElementById('cd-'+k).textContent='?'); return; }
+  const diff = new Date(ds+'T06:00:00') - new Date();
+  if (diff <= 0) { ['d','h','m','s'].forEach(k => document.getElementById('cd-'+k).textContent='🎉'); return; }
+  document.getElementById('cd-d').textContent = Math.floor(diff/86400000);
+  document.getElementById('cd-h').textContent = Math.floor((diff%86400000)/3600000);
+  document.getElementById('cd-m').textContent = Math.floor((diff%3600000)/60000);
+  document.getElementById('cd-s').textContent = Math.floor((diff%60000)/1000);
+}
+setInterval(updateCD, 1000); updateCD();
+
+/* ═══════════════════════════════════════
+   STATS
+═══════════════════════════════════════ */
+function updateStats() {
+  document.getElementById('i-village').textContent = D.settings.village;
+  document.getElementById('i-dates').textContent   = D.settings.eventDatesText;
+  document.getElementById('hTitle').textContent    = D.settings.templeName + ' उद्घाटन महोत्सव';
+
+  let slots = 0;
+  D.kundis.forEach(k => {
+    if (k.gheeAhuti && !k.gheeReserved) slots++;
+    k.tilJoo.forEach(s => { if (s) slots++; });
+  });
+  document.getElementById('st-slots').textContent = slots;
+  document.getElementById('st-shk').textContent   = D.shikhars.filter(s => s.cur).length;
+}
+
+/* ═══════════════════════════════════════
+   RENDER — KUNDIS (shikhar-style with history)
+═══════════════════════════════════════ */
+function renderKundis() {
+  const g = document.getElementById('kundiGrid');
+  g.innerHTML = D.kundis.map(k => {
+    const totalFilled = (k.gheeAhuti ? 1 : 0) + k.tilJoo.filter(Boolean).length;
+    const headBg =
+      totalFilled === 4 ? 'background:linear-gradient(135deg,#2E7D32,#43A047)' :
+      totalFilled > 0   ? 'background:linear-gradient(135deg,var(--saffron),var(--saffron2))' :
+                          'background:linear-gradient(135deg,#424242,#616161)';
+
+    // ── Ghee section ──
+    let gheeHtml;
+    if (k.gheeReserved) {
+      const nm = k.gheeAhuti ? k.gheeAhuti.family : 'ग्राम पटेल (आरक्षित)';
+      gheeHtml = `<div class="kund-cur kund-cur-reserved">
+        <div class="lbl">🔥 घी आहुति — आरक्षित</div>
+        <div class="nm">🏡 ${nm}</div>
+        <div class="tm">ग्राम पटेल के लिए आरक्षित</div>
+      </div>`;
+    } else if (k.gheeAhuti) {
+      const a = k.gheeAhuti;
+      gheeHtml = `<div class="kund-cur">
+        <div class="lbl">🏆 वर्तमान सर्वोच्च बोली</div>
+        <div class="nm">👨‍👩‍👧 ${a.family}</div>
+        ${a.amount ? `<div class="am">₹ ${fmt(a.amount)}</div>` : ''}
+        <div class="tm">${fmtDate(a.time)}</div>
+      </div>`;
+    } else {
+      gheeHtml = `<div class="kund-cur" style="border-color:var(--border);text-align:center;padding:14px 12px">
+        <div style="font-size:1.4rem">🔥</div>
+        <div style="font-size:.8rem;color:var(--textl);margin-top:4px">बोली खुली है</div>
+      </div>`;
+    }
+
+    // Ghee history
+    const gheeHist = k.history.filter(h => h.st === 'ghee');
+    const gheeHistHtml = gheeHist.length ? `
+      <div class="kund-hist">
+        <div class="kund-hist-lbl">📜 घी आहुति — पुरानी बोलियाँ</div>
+        ${[...gheeHist].reverse().map(h => {
+          return `<div class="kund-hist-row">
+            <span class="n">${h.family}</span>
+            <span class="a">${h.amount ? '₹'+fmt(h.amount) : '—'}</span>
+            <span class="t">${fmtDate(h.time)}</span>
+          </div>`;
+        }).join('')}
+      </div>` : '';
+
+    // Til-Joo
+    const tjHtml = k.tilJoo.map((s, i) => {
+      const tjHist = k.history.filter(h => h.st === 'tj'+i);
+      const tjHistHtml = tjHist.length ? `<div style="margin-top:3px">${tjHist.map(h => {
+        return `<div class="tj-hist-row">
+          <span class="n">${h.family}</span>
+          <span class="a">${h.amount ? '₹'+fmt(h.amount) : '—'}</span>
+        </div>`;
+      }).join('')}</div>` : '';
+
+      return s
+        ? `<div class="tj-row">
+            <span class="lbl">🌾 तिल-जौ ${i+1}</span>
+            <span class="nm">${s.family}</span>
+            <span class="am">${s.amount ? '₹'+fmt(s.amount) : ''}</span>
+            <span class="bd sb-filled">✓</span>
+           </div>${tjHistHtml}`
+        : `<div class="tj-row">
+            <span class="lbl">🌾 तिल-जौ ${i+1}</span>
+            <span class="nm" style="color:var(--textl)">खाली</span>
+            <span class="bd sb-open">बोली</span>
+           </div>`;
+    }).join('');
+
+    return `<div class="kund-card${k.pradhan?' pradhan':''}">
+      ${k.pradhan ? '<span class="pradhan-crown">👑 प्रधान कुण्ड — विशेष</span>' : ''}
+      <div class="kund-hd" style="${headBg}">
+        <div class="kund-hd-info">
+          <div class="kt">${k.pradhan?'⭐ ':''}कुण्ड ${k.id}</div>
+          ${k.pradhan ? '<div class="ks">प्रधान कुण्ड</div>' : ''}
+        </div>
+        <div class="kund-hd-pill">${totalFilled}/4 🔥</div>
+      </div>
+      <div class="kund-sect">
+        <div class="kund-sect-lbl">🔥 घी आहुति</div>
+        ${gheeHtml}
+        ${gheeHistHtml}
+      </div>
+      <div class="kund-sect">
+        <div class="kund-sect-lbl">🌾 तिल-जौ आहुति (3 स्लॉट)</div>
+        ${tjHtml}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════
+   RENDER — SHIKHARS
+═══════════════════════════════════════ */
+function renderShikhars() {
+  document.getElementById('shikharList').innerHTML = D.shikhars.map(s => {
+    const cur = s.cur;
+    const curHtml = cur
+      ? `<div class="bid-current">
+          <div class="bid-lbl">🏆 वर्तमान सर्वोच्च बोली</div>
+          <div class="bid-name">👨‍👩‍👧 ${cur.family}</div>
+          ${cur.amount ? `<div class="bid-amount">₹ ${fmt(cur.amount)}</div>` : ''}
+          <div class="bid-time">${fmtTime(cur.time)}</div>
+        </div>`
+      : `<div class="bid-current" style="border-color:var(--border);text-align:center;padding:18px 11px">
+          <div style="font-size:2.2rem">${s.icon}</div>
+          <div style="font-size:.82rem;color:var(--textl);margin-top:5px">अभी कोई बोली नहीं<br><small>एडमिन पेज से बोली जोड़ें</small></div>
+        </div>`;
+
+    const histHtml = s.hist.length
+      ? `<div class="bid-hist"><h4>📜 बोली का इतिहास</h4>
+          ${[...s.hist].reverse().map((b,i) =>
+            `<div class="brow old">
+               <div><div class="brow-name">${b.family}</div><div class="brow-t">${fmtTime(b.time)}</div></div>
+               <div class="brow-amt">${b.amount ? '₹'+fmt(b.amount) : '—'}</div>
+             </div>`
+          ).join('')}
+        </div>` : '';
+
+    return `<div class="shk-card">
+      <div class="shk-head">
+        <span class="shk-icon">${s.icon}</span>
+        <div><div class="shk-title">${s.name}</div><div class="shk-sub">बोली नं. ${s.id}</div></div>
+      </div>
+      <div class="shk-body">${curHtml}${histHtml}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════
+   RENDER — ADMIN BIDS LIST
+═══════════════════════════════════════ */
+function renderAdminBids() {
+  let html = '';
+
+  D.kundis.forEach(k => {
+    // Ghee (non-reserved)
+    if (k.gheeAhuti && !k.gheeReserved) {
+      const b = k.gheeAhuti;
+      html += `<div class="abid-item cur">
+        <div class="abid-info">
+          <div class="abid-title">🔥 कुण्ड ${k.id}${k.pradhan?' ⭐':''} — घी आहुति</div>
+          <div class="abid-meta">👤 ${b.family}${b.phone?' · 📱'+b.phone:''} ${b.amount?'· ₹'+fmt(b.amount):''}</div>
+        </div>
+        <button class="btn-edit" onclick="openEdit('kundi-ghee',${k.id})">✏️ संपादित</button>
+        <button class="btn-del"  onclick="delKundi(${k.id},'ghee')">✕</button>
+      </div>`;
+    }
+    // Til-joo
+    k.tilJoo.forEach((s,i) => {
+      if (!s) return;
+      html += `<div class="abid-item cur">
+        <div class="abid-info">
+          <div class="abid-title">🌾 कुण्ड ${k.id} — तिल-जौ ${i+1}</div>
+          <div class="abid-meta">👤 ${s.family}${s.phone?' · 📱'+s.phone:''} ${s.amount?'· ₹'+fmt(s.amount):''}</div>
+        </div>
+        <button class="btn-edit" onclick="openEdit('kundi-tj',${k.id},${i})">✏️ संपादित</button>
+        <button class="btn-del"  onclick="delKundi(${k.id},'tj',${i})">✕</button>
+      </div>`;
+    });
+    // History (faded) — with edit
+    k.history.forEach((h, hi) => {
+      html += `<div class="abid-item old">
+        <div class="abid-info">
+          <div class="abid-title">📜 कुण्ड ${k.id} — ${h.st==='ghee'?'घी':'तिल-जौ'} (पुरानी)</div>
+          <div class="abid-meta">👤 ${h.family} ${h.amount?'· ₹'+fmt(h.amount):''}</div>
+        </div>
+        <button class="btn-edit" onclick="openEdit('kundi-hist',${k.id},${hi})">✏️</button>
+      </div>`;
+    });
+  });
+
+  D.shikhars.forEach(s => {
+    if (s.cur) {
+      html += `<div class="abid-item cur">
+        <div class="abid-info">
+          <div class="abid-title">${s.icon} ${s.name}</div>
+          <div class="abid-meta">👤 ${s.cur.family}${s.cur.phone?' · 📱'+s.cur.phone:''} ${s.cur.amount?'· ₹'+fmt(s.cur.amount):''}</div>
+        </div>
+        <button class="btn-edit" onclick="openEdit('shikhar',${s.id-1})">✏️ संपादित</button>
+        <button class="btn-del"  onclick="delShikhar(${s.id-1})">✕</button>
+      </div>`;
+    }
+    [...s.hist].reverse().forEach((b, ri) => {
+      const origIdx = s.hist.length - 1 - ri;
+      html += `<div class="abid-item old">
+        <div class="abid-info">
+          <div class="abid-title">📜 ${s.name} (पुरानी बोली)</div>
+          <div class="abid-meta">👤 ${b.family} ${b.amount?'· ₹'+fmt(b.amount):''}</div>
+        </div>
+        <button class="btn-edit" onclick="openEdit('shikhar-hist',${s.id-1},${origIdx})">✏️</button>
+      </div>`;
+    });
+  });
+
+  document.getElementById('allBids').innerHTML = html || `<div class="empty"><div class="ei">📋</div><p>अभी कोई बोली नहीं है</p></div>`;
+}
+
+/* ═══════════════════════════════════════
+   ADMIN — KUNDI SLOT OPTIONS
+═══════════════════════════════════════ */
+function initKundiOpts() {
+  const sel = document.getElementById('f-kn');
+  sel.innerHTML = '<option value="">-- कुण्ड चुनें --</option>';
+  for (let i=1; i<=11; i++) {
+    const opt = document.createElement('option');
+    opt.value = i;
+    const tag = i===1 ? ' ⭐ प्रधान' : i>=10 ? ' (पटेल आरक्षित)' : '';
+    opt.textContent = `कुण्ड ${i}${tag}`;
+    sel.appendChild(opt);
+  }
+}
+
+function refreshSlotOpts() {
+  const n = parseInt(document.getElementById('f-kn').value);
+  const sel = document.getElementById('f-ks');
+  sel.innerHTML = '<option value="">-- स्लॉट चुनें --</option>';
+  if (!n) return;
+  const k = D.kundis[n-1];
+
+  if (!k.gheeReserved) {
+    const o = document.createElement('option');
+    o.value = 'ghee';
+    o.textContent = `🔥 घी आहुति${k.gheeAhuti?' ('+k.gheeAhuti.family+')':' (खाली)'}`;
+    sel.appendChild(o);
+  } else {
+    const o = document.createElement('option');
+    o.value='ghee'; o.disabled=true;
+    o.textContent='🔥 घी आहुति (ग्राम पटेल — आरक्षित)';
+    sel.appendChild(o);
+  }
+
+  k.tilJoo.forEach((s,i) => {
+    const o = document.createElement('option');
+    o.value = 'tj'+i;
+    o.textContent = `🌾 तिल-जौ आहुति ${i+1}${s?' ('+s.family+')':' (खाली)'}`;
+    sel.appendChild(o);
+  });
+}
+
+/* ═══════════════════════════════════════
+   SUBMIT — KUNDI BID
+═══════════════════════════════════════ */
+function submitKundiBid() {
+  const kn   = parseInt(document.getElementById('f-kn').value);
+  const sv   = document.getElementById('f-ks').value;
+  const name = document.getElementById('f-kname').value.trim();
+  const amt  = document.getElementById('f-kamt').value;
+  const ph   = document.getElementById('f-kph').value.trim();
+
+  if (!kn || !sv || !name) { toast('❌ कृपया कुण्ड, स्लॉट एवं नाम भरें'); return; }
+
+  const k   = D.kundis[kn-1];
+  const bid = { family:name, amount:amt||0, phone:ph, time:new Date().toISOString() };
+
+  if (sv === 'ghee') {
+    if (k.gheeReserved) { toast('❌ यह स्लॉट ग्राम पटेल के लिए आरक्षित है'); return; }
+    if (k.gheeAhuti) k.history.push({...k.gheeAhuti, st:'ghee'});
+    k.gheeAhuti = bid;
+  } else {
+    const idx = parseInt(sv.replace('tj',''));
+    if (k.tilJoo[idx]) k.history.push({...k.tilJoo[idx], st:'tj'+idx});
+    k.tilJoo[idx] = bid;
+  }
+
+  save(D);
+  refreshSlotOpts();
+  renderAdminBids();
+  document.getElementById('f-kname').value='';
+  document.getElementById('f-kamt').value='';
+  document.getElementById('f-kph').value='';
+  toast('✅ बोली सफलतापूर्वक सहेजी गई!');
+}
+
+/* ═══════════════════════════════════════
+   SUBMIT — SHIKHAR BID
+═══════════════════════════════════════ */
+function submitShikharBid() {
+  const si   = document.getElementById('f-sn').value;
+  const name = document.getElementById('f-sname').value.trim();
+  const amt  = document.getElementById('f-samt').value;
+  const ph   = document.getElementById('f-sph').value.trim();
+
+  if (si==='' || !name) { toast('❌ कृपया शिखर/आरती एवं नाम भरें'); return; }
+
+  const s   = D.shikhars[parseInt(si)];
+  const bid = { family:name, amount:amt||0, phone:ph, time:new Date().toISOString() };
+
+  if (s.cur) s.hist.push(s.cur);
+  s.cur = bid;
+
+  save(D);
+  renderAdminBids();
+  document.getElementById('f-sname').value='';
+  document.getElementById('f-samt').value='';
+  document.getElementById('f-sph').value='';
+  document.getElementById('f-sn').value='';
+  toast('✅ बोली सहेजी गई!');
+}
+
+/* ═══════════════════════════════════════
+   DELETE
+═══════════════════════════════════════ */
+function delKundi(id, type, idx) {
+  if (!confirm('इस बोली को हटाएं?')) return;
+  const k = D.kundis[id-1];
+  if (type==='ghee') {
+    if (k.gheeAhuti) k.history.push({...k.gheeAhuti, st:'ghee'});
+    k.gheeAhuti = null;
+  } else {
+    if (k.tilJoo[idx]) k.history.push({...k.tilJoo[idx], st:'tj'+idx});
+    k.tilJoo[idx] = null;
+  }
+  save(D); renderAdminBids(); toast('🗑️ बोली हटाई गई');
+}
+
+function delShikhar(idx) {
+  if (!confirm('इस बोली को हटाएं?')) return;
+  const s = D.shikhars[idx];
+  if (s.cur) s.hist.push(s.cur);
+  s.cur = null;
+  save(D); renderAdminBids(); toast('🗑️ बोली हटाई गई');
+}
+
+/* ═══════════════════════════════════════
+   SETTINGS
+═══════════════════════════════════════ */
+function loadSettingsForm() {
+  const s = D.settings;
+  document.getElementById('s-tname').value = s.templeName;
+  document.getElementById('s-vill').value  = s.village;
+  document.getElementById('s-date').value  = s.eventDate;
+  document.getElementById('s-dtxt').value  = s.eventDatesText;
+  document.getElementById('s-r10').value   = s.reserved10;
+  document.getElementById('s-r11').value   = s.reserved11;
+}
+
+function saveSettings() {
+  D.settings.templeName     = document.getElementById('s-tname').value || 'श्री मंदिर';
+  D.settings.village        = document.getElementById('s-vill').value;
+  D.settings.eventDate      = document.getElementById('s-date').value;
+  D.settings.eventDatesText = document.getElementById('s-dtxt').value;
+  D.settings.reserved10     = document.getElementById('s-r10').value || 'ग्राम पटेल (आरक्षित)';
+  D.settings.reserved11     = document.getElementById('s-r11').value || 'ग्राम पटेल (आरक्षित)';
+  syncReserved();
+  save(D); updateStats(); updateCD();
+  toast('✅ सेटिंग्स सहेजी गईं!');
+}
+
+function resetAll() {
+  if (!confirm('⚠️ सभी बोलियाँ और डेटा मिट जाएगा। निश्चित हैं?')) return;
+  D = mkData(); syncReserved(); save(D);
+  renderAdminBids(); loadSettingsForm(); initKundiOpts(); updateStats();
+  toast('🗑️ सभी डेटा रीसेट हो गया');
+}
+
+/* ═══════════════════════════════════════
+   EDIT MODAL
+═══════════════════════════════════════ */
+let editState = null;
+
+function openEdit(type, ...args) {
+  let bid, ctxLabel;
+
+  if (type === 'kundi-ghee') {
+    const [kundiId] = args;
+    const k = D.kundis[kundiId - 1];
+    bid = k.gheeAhuti;
+    ctxLabel = `कुण्ड ${kundiId}${k.pradhan?' ⭐':''} — घी आहुति (वर्तमान)`;
+    editState = { type, kundiId };
+
+  } else if (type === 'kundi-tj') {
+    const [kundiId, idx] = args;
+    const k = D.kundis[kundiId - 1];
+    bid = k.tilJoo[idx];
+    ctxLabel = `कुण्ड ${kundiId} — तिल-जौ ${idx + 1} (वर्तमान)`;
+    editState = { type, kundiId, idx };
+
+  } else if (type === 'kundi-hist') {
+    const [kundiId, hi] = args;
+    const k = D.kundis[kundiId - 1];
+    bid = k.history[hi];
+    ctxLabel = `कुण्ड ${kundiId} — ${bid && bid.st==='ghee'?'घी':'तिल-जौ'} (पुरानी बोली)`;
+    editState = { type, kundiId, hi };
+
+  } else if (type === 'shikhar') {
+    const [si] = args;
+    bid = D.shikhars[si].cur;
+    ctxLabel = `${D.shikhars[si].name} (वर्तमान बोली)`;
+    editState = { type, si };
+
+  } else if (type === 'shikhar-hist') {
+    const [si, hi] = args;
+    bid = D.shikhars[si].hist[hi];
+    ctxLabel = `${D.shikhars[si].name} (पुरानी बोली)`;
+    editState = { type, si, hi };
+  }
+
+  if (!bid) { toast('❌ डेटा नहीं मिला'); return; }
+
+  document.getElementById('editCtx').textContent  = '✏️ ' + ctxLabel;
+  document.getElementById('e-name').value = bid.family || '';
+  document.getElementById('e-amt').value  = bid.amount  || '';
+  document.getElementById('e-ph').value   = bid.phone   || '';
+  document.getElementById('editOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('e-name').focus(), 200);
+}
+
+function closeEdit() {
+  editState = null;
+  document.getElementById('editOverlay').classList.remove('open');
+}
+
+function saveEdit() {
+  if (!editState) return;
+  const name = document.getElementById('e-name').value.trim();
+  const amt  = document.getElementById('e-amt').value;
+  const ph   = document.getElementById('e-ph').value.trim();
+  if (!name) { toast('❌ नाम आवश्यक है'); return; }
+
+  const patch = { family: name, amount: amt || 0, phone: ph };
+  const { type } = editState;
+
+  if (type === 'kundi-ghee') {
+    const k = D.kundis[editState.kundiId - 1];
+    k.gheeAhuti = { ...k.gheeAhuti, ...patch };
+
+  } else if (type === 'kundi-tj') {
+    const k = D.kundis[editState.kundiId - 1];
+    k.tilJoo[editState.idx] = { ...k.tilJoo[editState.idx], ...patch };
+
+  } else if (type === 'kundi-hist') {
+    const k = D.kundis[editState.kundiId - 1];
+    k.history[editState.hi] = { ...k.history[editState.hi], ...patch };
+
+  } else if (type === 'shikhar') {
+    const s = D.shikhars[editState.si];
+    s.cur = { ...s.cur, ...patch };
+
+  } else if (type === 'shikhar-hist') {
+    const s = D.shikhars[editState.si];
+    s.hist[editState.hi] = { ...s.hist[editState.hi], ...patch };
+  }
+
+  save(D);
+  closeEdit();
+  renderAdminBids();
+  // Re-render view pages if active
+  if (document.getElementById('page-kundis').classList.contains('active'))   renderKundis();
+  if (document.getElementById('page-shikhars').classList.contains('active')) renderShikhars();
+  toast('✅ बोली अपडेट की गई!');
+}
+
+/* ═══════════════════════════════════════
+   UTILITIES
+═══════════════════════════════════════ */
+function fmt(n) { return Number(n).toLocaleString('en-IN'); }
+
+function fmtDate(iso) {
+  if (!iso) return '';
+  try { return new Date(iso).toLocaleDateString('hi-IN',{day:'numeric',month:'short',year:'numeric'}); }
+  catch(e) { return ''; }
+}
+
+function fmtTime(iso) {
+  if (!iso) return '';
+  try {
+    const d = new Date(iso);
+    return d.toLocaleDateString('hi-IN',{day:'numeric',month:'short',year:'numeric'}) +
+           ' ' + d.toLocaleTimeString('hi-IN',{hour:'2-digit',minute:'2-digit'});
+  } catch(e) { return iso; }
+}
+
+let toastTmr;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(toastTmr);
+  toastTmr = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+/* ═══════════════════════════════════════
+   INIT
+═══════════════════════════════════════ */
+initKundiOpts();
+updateStats();
+renderKundis();
+
+// ── Hash-based admin route ──
+// Public URL  : index.html          → view only (Home/Timeline/Kundis/Shikhars)
+// Admin URL   : index.html#admin    → + Admin tab visible
+function initRoute() {
+  const isAdmin = window.location.hash === '#admin';
+  const navBtn  = document.getElementById('nav-admin');
+  const pg      = document.getElementById('page-admin');
+  navBtn.style.display = isAdmin ? '' : 'none';
+  if (isAdmin) {
+    // Show a subtle admin indicator in header
+    const hdr = document.querySelector('.header-sub');
+    if (hdr && !hdr.dataset.adminSet) {
+      hdr.textContent += '  🔒 Admin Mode';
+      hdr.dataset.adminSet = '1';
+    }
+    showPage('admin');
+  }
+}
+
+window.addEventListener('hashchange', initRoute);
+initRoute();
+</script>
+</body>
+</html>
