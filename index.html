@@ -634,9 +634,45 @@
     <div id="allBids"><!-- JS --></div>
   </div>
 
+  <!-- Cloud Sync (npoint.io - zero setup) -->
+  <div class="adm-sec">
+    <h3>☁️ Cloud Sync <small style="font-size:.7rem;font-weight:400;color:#888">(सबको Real-time दिखे)</small></h3>
+    <div id="syncSetupBox" style="display:none;background:#E8F5E9;border-radius:9px;padding:14px;margin-bottom:13px;font-size:.8rem;color:#1B5E20;line-height:1.7;border:1px solid #A5D6A7;">
+      ✅ <strong>Cloud Sync Active है!</strong><br>
+      Sync ID: <strong id="syncIdDisplay" style="font-family:monospace;color:#0D47A1;font-size:.9rem;letter-spacing:1px"></strong><br>
+      <span style="font-size:.72rem;color:#388E3C;">यह ID दूसरे admins को दें — वे नीचे "Other Device Setup" में enter करें</span>
+    </div>
+    <div id="syncNewBox">
+      <div style="background:#FFF8E1;border-radius:9px;padding:12px;margin-bottom:13px;font-size:.78rem;color:#5D4037;line-height:1.7;border:1px solid #FFE082;">
+        🔴 Cloud Sync अभी OFF है — नीचे बटन दबाएं, कोई account नहीं चाहिए!
+      </div>
+      <button class="btn btn-green" onclick="createCloudSync()" id="createSyncBtn">🚀 Cloud Sync शुरू करें — Free, No Account</button>
+    </div>
+    <div id="syncOtherBox" style="margin-top:14px;border-top:1px solid #eee;padding-top:14px;">
+      <div style="font-size:.78rem;color:#555;margin-bottom:8px;">📱 <strong>Other Device Setup</strong> — किसी और को admin बनाना हो तो उन्हें Sync ID enter करवाएं:</div>
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="syncIdInput" placeholder="Sync ID (जैसे: abc12345)" style="flex:1;padding:9px;border:1.5px solid #D4500A;border-radius:8px;font-size:.85rem;">
+        <button class="btn btn-maroon" onclick="connectSyncId()" style="white-space:nowrap">🔗 Connect</button>
+      </div>
+    </div>
+    <div class="fg" style="margin-top:14px;">
+      <label>Admin PIN <small style="font-weight:400">(4-8 अंक — admin URL पर यही माँगेगा)</small></label>
+      <input type="password" id="fb-pin" placeholder="जैसे: 1108" maxlength="8" inputmode="numeric">
+      <button class="btn btn-green" style="margin-top:8px" onclick="savePin()">💾 PIN सहेजें</button>
+    </div>
+    <div id="fbStatus" style="margin-top:8px;font-size:.78rem;color:var(--textl);text-align:center;display:none"></div>
+  </div>
+
   <!-- Settings -->
   <div class="adm-sec">
     <h3>⚙️ कार्यक्रम सेटिंग्स</h3>
+
+    <!-- EXPORT — most important action, shown first -->
+    <div style="background:linear-gradient(135deg,#E8F5E9,#C8E6C9);border-radius:10px;padding:14px;margin-bottom:16px;border:2px solid #66BB6A;">
+      <div style="font-size:.85rem;font-weight:800;color:#2E7D32;margin-bottom:4px;">📤 सभी को लेटेस्ट डेटा भेजें</div>
+      <div style="font-size:.75rem;color:#388E3C;margin-bottom:10px;line-height:1.4;">आपके अपडेट दूसरों को तभी दिखेंगे जब आप यह बटन दबाकर नई HTML फ़ाइल डाउनलोड करें और WhatsApp/email से शेयर करें।</div>
+      <button class="btn btn-green" onclick="exportHTML()">⬇️ अपडेट HTML डाउनलोड करें — शेयर करें</button>
+    </div>
     <div class="fg">
       <label>मंदिर का नाम</label>
       <input type="text" id="s-tname" placeholder="श्री राम मंदिर">
@@ -713,6 +749,7 @@ const BH = (f, a, st, d) => ({ family:f, amount:a||0, phone:'', time: d ? T(d) :
 /* ═══════════════════════════════════════
    DATA MODEL (pre-populated with real data)
 ═══════════════════════════════════════ */
+/* __DATA_START__ */
 function mkData() {
   return {
     v: DV,
@@ -912,6 +949,7 @@ function mkData() {
     ]
   };
 }
+/* __DATA_END__ */
 
 function load() {
   try {
@@ -924,6 +962,194 @@ function load() {
   return mkData();
 }
 function save(d) { localStorage.setItem('td', JSON.stringify(d)); }
+
+/* ─── Cloud Sync (npoint.io — zero setup) ─── */
+const NPOINT = 'https://api.npoint.io';
+
+function getSyncConfig() {
+  return JSON.parse(localStorage.getItem('syncConfig') || '{}');
+}
+function setSyncConfig(obj) {
+  const cur = getSyncConfig();
+  localStorage.setItem('syncConfig', JSON.stringify({ ...cur, ...obj }));
+}
+
+function getFbConfig() { return getSyncConfig(); } // alias for PIN checks
+
+function loadFbConfigForm() {
+  const c = getSyncConfig();
+  const p = document.getElementById('fb-pin');
+  if (p) p.value = c.pin || '';
+  updateSyncUI();
+}
+
+function updateSyncUI() {
+  const c = getSyncConfig();
+  const setupBox = document.getElementById('syncSetupBox');
+  const newBox   = document.getElementById('syncNewBox');
+  const display  = document.getElementById('syncIdDisplay');
+  if (!setupBox) return;
+  if (c.id) {
+    setupBox.style.display = 'block';
+    newBox.style.display   = 'none';
+    if (display) display.textContent = c.id;
+  } else {
+    setupBox.style.display = 'none';
+    newBox.style.display   = '';
+  }
+}
+
+function savePin() {
+  const pin = (document.getElementById('fb-pin').value || '').trim();
+  setSyncConfig({ pin });
+  fbStatus('✅ PIN सहेजा!', '#2E7D32');
+  toast('✅ Admin PIN set हो गया!');
+}
+
+function saveFbConfig() { savePin(); } // alias
+
+async function createCloudSync() {
+  const btn = document.getElementById('createSyncBtn');
+  btn.disabled = true; btn.textContent = '⏳ Creating…';
+  fbStatus('Cloud पर data भेज रहे हैं…', '#1565C0');
+  try {
+    const res = await fetch(NPOINT + '/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(D)
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const json = await res.json();
+    const id    = json.id    || json._id;
+    const token = json.token || json.edit_token || json.access_token || '';
+    if (!id) throw new Error('No ID in response');
+    setSyncConfig({ id, token });
+    updateSyncUI();
+    fbStatus('✅ Cloud Sync शुरू! सबको अब दिख रहा है 🎉', '#2E7D32');
+    toast('✅ Cloud Sync Active!');
+  } catch(e) {
+    fbStatus('❌ Error: ' + e.message, '#C62828');
+    btn.disabled = false; btn.textContent = '🚀 Cloud Sync शुरू करें — Free, No Account';
+  }
+}
+
+async function connectSyncId() {
+  const id = (document.getElementById('syncIdInput').value || '').trim();
+  if (!id) { toast('❌ Sync ID enter करें'); return; }
+  fbStatus('⏳ Connecting…', '#1565C0');
+  try {
+    const data = await loadFromNpoint(id);
+    if (!data) throw new Error('ID नहीं मिला या data empty है');
+    setSyncConfig({ id, token: '' });
+    D = data; save(D); syncReserved();
+    updateStats(); renderKundis(); renderShikhars(); renderAdminBids();
+    updateSyncUI();
+    fbStatus('✅ Connected! Live data मिल गया 🎉', '#2E7D32');
+    toast('✅ Sync ID connect हो गया!');
+  } catch(e) {
+    fbStatus('❌ ' + e.message, '#C62828');
+  }
+}
+
+async function saveToFirebase() {
+  const c = getSyncConfig();
+  if (!c.id) return;
+  try {
+    const headers = { 'Content-Type': 'application/json' };
+    if (c.token) headers['X-Auth-Token'] = c.token;
+    const res = await fetch(`${NPOINT}/${c.id}`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(D)
+    });
+    if (res.ok) fbStatus('✅ Live! सबको दिख रहा है 🎉', '#2E7D32');
+    else fbStatus('⚠️ Sync error: ' + res.status, '#E65100');
+  } catch(e) {
+    console.warn('Cloud sync:', e);
+  }
+}
+
+async function loadFromNpoint(id) {
+  const res = await fetch(`${NPOINT}/${id}`);
+  if (!res.ok) return null;
+  const data = await res.json();
+  return (data && data.v) ? data : null;
+}
+
+async function loadFromFirebase() {
+  const c = getSyncConfig();
+  if (!c.id) return null;
+  return loadFromNpoint(c.id);
+}
+
+function fbStatus(msg, color) {
+  const el = document.getElementById('fbStatus');
+  if (!el) return;
+  el.textContent = msg; el.style.color = color || 'var(--textl)'; el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 5000);
+}
+
+/* ─── Admin PIN ─── */
+let adminUnlocked = false;
+function showPinPrompt() {
+  const ov = document.getElementById('pinOverlay');
+  ov.style.display = 'flex';
+  setTimeout(() => document.getElementById('pinInput').focus(), 100);
+}
+function checkPin() {
+  const c   = getSyncConfig();
+  const pin = document.getElementById('pinInput').value.trim();
+  const err = document.getElementById('pinErr');
+  if (!c.pin || pin === c.pin) {
+    adminUnlocked = true;
+    document.getElementById('pinOverlay').style.display = 'none';
+    document.getElementById('pinInput').value = '';
+    activateAdmin();
+  } else {
+    err.textContent = '❌ गलत PIN, फिर से कोशिश करें';
+    document.getElementById('pinInput').value = '';
+    document.getElementById('pinInput').focus();
+  }
+}
+function activateAdmin() {
+  const navBtn = document.getElementById('nav-admin');
+  navBtn.style.display = '';
+  const hdr = document.querySelector('.header-sub');
+  if (hdr && !hdr.dataset.adminSet) {
+    hdr.textContent += '  🔒 Admin Mode';
+    hdr.dataset.adminSet = '1';
+  }
+  showPage('admin');
+}
+function exportHTML() {
+  try {
+    // Build updated mkData that returns current state
+    const newMkData =
+      `function mkData() {\n  return ${JSON.stringify(D, null, 2)};\n}`;
+
+    // Get current page HTML (includes original script text)
+    let html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+
+    // Replace everything between the data markers
+    html = html.replace(
+      /\/\* __DATA_START__ \*\/[\s\S]*?\/\* __DATA_END__ \*\//,
+      `/* __DATA_START__ */\n${newMkData}\n/* __DATA_END__ */`
+    );
+
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = 'mandir-utsav-latest.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast('✅ अपडेट फ़ाइल डाउनलोड हो गई — अब शेयर करें!');
+  } catch(e) {
+    toast('❌ Export failed: ' + e.message);
+  }
+}
 
 let D = load();
 
@@ -944,7 +1170,7 @@ function showPage(name) {
   window.scrollTo(0,0);
   if (name === 'kundis')   renderKundis();
   if (name === 'shikhars') renderShikhars();
-  if (name === 'admin')    { renderAdminBids(); loadSettingsForm(); initKundiOpts(); }
+  if (name === 'admin')    { renderAdminBids(); loadSettingsForm(); initKundiOpts(); loadFbConfigForm(); }
   if (name === 'home')     updateStats();
 }
 
@@ -1262,6 +1488,7 @@ function submitKundiBid() {
   }
 
   save(D);
+  saveToFirebase();
   refreshSlotOpts();
   renderAdminBids();
   document.getElementById('f-kname').value='';
@@ -1288,6 +1515,7 @@ function submitShikharBid() {
   s.cur = bid;
 
   save(D);
+  saveToFirebase();
   renderAdminBids();
   document.getElementById('f-sname').value='';
   document.getElementById('f-samt').value='';
@@ -1309,7 +1537,7 @@ function delKundi(id, type, idx) {
     if (k.tilJoo[idx]) k.history.push({...k.tilJoo[idx], st:'tj'+idx});
     k.tilJoo[idx] = null;
   }
-  save(D); renderAdminBids(); toast('🗑️ बोली हटाई गई');
+  save(D); saveToFirebase(); renderAdminBids(); toast('🗑️ बोली हटाई गई');
 }
 
 function delShikhar(idx) {
@@ -1317,7 +1545,7 @@ function delShikhar(idx) {
   const s = D.shikhars[idx];
   if (s.cur) s.hist.push(s.cur);
   s.cur = null;
-  save(D); renderAdminBids(); toast('🗑️ बोली हटाई गई');
+  save(D); saveToFirebase(); renderAdminBids(); toast('🗑️ बोली हटाई गई');
 }
 
 /* ═══════════════════════════════════════
@@ -1341,13 +1569,13 @@ function saveSettings() {
   D.settings.reserved10     = document.getElementById('s-r10').value || 'ग्राम पटेल (आरक्षित)';
   D.settings.reserved11     = document.getElementById('s-r11').value || 'ग्राम पटेल (आरक्षित)';
   syncReserved();
-  save(D); updateStats(); updateCD();
+  save(D); saveToFirebase(); updateStats(); updateCD();
   toast('✅ सेटिंग्स सहेजी गईं!');
 }
 
 function resetAll() {
   if (!confirm('⚠️ सभी बोलियाँ और डेटा मिट जाएगा। निश्चित हैं?')) return;
-  D = mkData(); syncReserved(); save(D);
+  D = mkData(); syncReserved(); save(D); saveToFirebase();
   renderAdminBids(); loadSettingsForm(); initKundiOpts(); updateStats();
   toast('🗑️ सभी डेटा रीसेट हो गया');
 }
@@ -1441,6 +1669,7 @@ function saveEdit() {
   }
 
   save(D);
+  saveToFirebase();
   closeEdit();
   renderAdminBids();
   // Re-render view pages if active
@@ -1489,22 +1718,48 @@ renderKundis();
 // Admin URL   : index.html#admin    → + Admin tab visible
 function initRoute() {
   const isAdmin = window.location.hash === '#admin';
-  const navBtn  = document.getElementById('nav-admin');
-  const pg      = document.getElementById('page-admin');
-  navBtn.style.display = isAdmin ? '' : 'none';
-  if (isAdmin) {
-    // Show a subtle admin indicator in header
-    const hdr = document.querySelector('.header-sub');
-    if (hdr && !hdr.dataset.adminSet) {
-      hdr.textContent += '  🔒 Admin Mode';
-      hdr.dataset.adminSet = '1';
-    }
-    showPage('admin');
+  if (!isAdmin) return;
+
+  const c = getFbConfig();
+  if (c.pin && !adminUnlocked) {
+    // Show PIN prompt
+    showPinPrompt();
+  } else {
+    adminUnlocked = true;
+    activateAdmin();
   }
 }
 
 window.addEventListener('hashchange', initRoute);
-initRoute();
+
+// Async startup: try Firebase first, then localStorage
+(async () => {
+  const fbData = await loadFromFirebase();
+  if (fbData) {
+    D = fbData;
+    save(D); // cache locally
+    syncReserved();
+    updateStats();
+    renderKundis();
+    renderShikhars();
+  }
+  initRoute();
+})();
 </script>
+<!-- Admin PIN Prompt -->
+<div id="pinOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:16px;padding:28px 24px;max-width:320px;width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.3);">
+    <div style="font-size:2rem;margin-bottom:8px;">🔒</div>
+    <div style="font-size:1.1rem;font-weight:700;color:#4A0020;margin-bottom:6px;">Admin Mode</div>
+    <div style="font-size:.83rem;color:#666;margin-bottom:16px;">Admin PIN दर्ज करें</div>
+    <input type="password" id="pinInput" inputmode="numeric" maxlength="8"
+      placeholder="PIN" autocomplete="off"
+      style="width:100%;padding:12px;font-size:1.4rem;text-align:center;border:2px solid #D4500A;border-radius:10px;outline:none;letter-spacing:6px;margin-bottom:14px;"
+      onkeydown="if(event.key==='Enter')checkPin()">
+    <button onclick="checkPin()" class="btn btn-maroon" style="width:100%;font-size:1rem;">✅ Enter</button>
+    <div id="pinErr" style="color:#C62828;font-size:.8rem;margin-top:8px;"></div>
+  </div>
+</div>
+
 </body>
 </html>
