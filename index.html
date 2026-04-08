@@ -929,8 +929,9 @@ function load() {
 }
 function save(d) { localStorage.setItem('td', JSON.stringify(d)); }
 
-/* ─── Cloud Sync — supports Firebase + npoint.io ─── */
+/* ─── Cloud Sync — Firebase hardcoded ─── */
 const NPOINT = 'https://api.npoint.io';
+const FIREBASE_URL = 'https://temple-bid-fun-default-rtdb.firebaseio.com';
 
 function getSyncConfig() {
   // Merge old fbConfig (Firebase) with new syncConfig (npoint)
@@ -1058,31 +1059,19 @@ async function connectSyncId() {
 }
 
 async function saveToFirebase() {
-  const { fb, np } = getSyncFull();
-  // Firebase URL: localStorage first, then baked-in settings
-  const fbUrl = (fb.url) || (D.settings && D.settings.firebaseUrl) || '';
-
-  if (fbUrl) {
-    try {
-      const res = await fetch(fbUrl + '/data.json', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(D)
-      });
-      if (res.ok) { fbStatus('✅ Firebase sync! 🎉', '#2E7D32'); return; }
-    } catch(e) { console.warn('Firebase sync err:', e); }
-  }
-
-  // Fallback: npoint
-  if (np.id) {
-    try {
-      const headers = { 'Content-Type': 'application/json' };
-      if (np.token) headers['X-Auth-Token'] = np.token;
-      const res = await fetch(`${NPOINT}/${np.id}`, {
-        method: 'POST', headers, body: JSON.stringify(D)
-      });
-      if (res.ok) fbStatus('✅ Cloud sync! 🎉', '#2E7D32');
-    } catch(e) { console.warn('npoint sync err:', e); }
+  try {
+    const res = await fetch(FIREBASE_URL + '/data.json', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(D)
+    });
+    if (res.ok) { fbStatus('✅ Firebase sync! 🎉', '#2E7D32'); return true; }
+    fbStatus('❌ Sync failed (' + res.status + ')', '#C62828');
+    return false;
+  } catch(e) {
+    console.warn('Firebase sync err:', e);
+    fbStatus('❌ Network error — local में सहेजा', '#C62828');
+    return false;
   }
 }
 
@@ -1096,24 +1085,16 @@ async function loadFromNpoint(id) {
 }
 
 async function loadFromFirebase() {
-  const { fb, np } = getSyncFull();
-  const fbUrl = (fb.url) || (D.settings && D.settings.firebaseUrl) || '';
-
-  if (fbUrl) {
-    try {
-      const ctrl = new AbortController();
-      const tid  = setTimeout(() => ctrl.abort(), 4000);
-      const res  = await fetch(fbUrl + '/data.json', { signal: ctrl.signal });
-      clearTimeout(tid);
-      if (res.ok) {
-        const data = await res.json();
-        if (data && data.v) return data;
-      }
-    } catch(e) { console.warn('Firebase load err:', e.name); }
-  }
-
-  // Fallback: npoint
-  if (np.id) return loadFromNpoint(np.id);
+  try {
+    const ctrl = new AbortController();
+    const tid  = setTimeout(() => ctrl.abort(), 4000);
+    const res  = await fetch(FIREBASE_URL + '/data.json', { signal: ctrl.signal });
+    clearTimeout(tid);
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.v) return data;
+    }
+  } catch(e) { console.warn('Firebase load err:', e.name); }
   return null;
 }
 
@@ -1509,7 +1490,7 @@ function refreshSlotOpts() {
 /* ═══════════════════════════════════════
    SUBMIT — KUNDI BID
 ═══════════════════════════════════════ */
-function submitKundiBid() {
+async function submitKundiBid() {
   const kn   = parseInt(document.getElementById('f-kn').value);
   const sv   = document.getElementById('f-ks').value;
   const name = document.getElementById('f-kname').value.trim();
@@ -1518,33 +1499,44 @@ function submitKundiBid() {
 
   if (!kn || !sv || !name) { toast('❌ कृपया कुण्ड, स्लॉट एवं नाम भरें'); return; }
 
-  const k   = D.kundis[kn-1];
+  const k = D.kundis[kn-1];
+  const slotLabel = sv === 'ghee' ? 'घी आहुति' : 'तिल-जौ ' + (parseInt(sv.replace('tj',''))+1);
+  if (!confirm(`कुण्ड ${kn} — ${slotLabel}\nपरिवार: ${name}${amt ? '\nराशि: ₹'+amt : ''}\n\nक्या आप यह बोली सबमिट करना चाहते हैं?`)) return;
+
   const bid = { family:name, amount:amt||0, phone:ph, time:new Date().toISOString() };
 
   if (sv === 'ghee') {
     if (k.gheeReserved) { toast('❌ यह स्लॉट ग्राम पटेल के लिए आरक्षित है'); return; }
+    if (!k.history) k.history = [];
     if (k.gheeAhuti) k.history.push({...k.gheeAhuti, st:'ghee'});
     k.gheeAhuti = bid;
   } else {
     const idx = parseInt(sv.replace('tj',''));
+    if (!k.history) k.history = [];
     if (k.tilJoo[idx]) k.history.push({...k.tilJoo[idx], st:'tj'+idx});
     k.tilJoo[idx] = bid;
   }
 
   save(D);
-  saveToFirebase();
+  const ok = await saveToFirebase();
   refreshSlotOpts();
   renderAdminBids();
-  document.getElementById('f-kname').value='';
-  document.getElementById('f-kamt').value='';
-  document.getElementById('f-kph').value='';
-  toast('✅ बोली सफलतापूर्वक सहेजी गई!');
+  if (ok) {
+    document.getElementById('f-kn').value='';
+    document.getElementById('f-ks').innerHTML='<option value="">-- पहले कुण्ड चुनें --</option>';
+    document.getElementById('f-kname').value='';
+    document.getElementById('f-kamt').value='';
+    document.getElementById('f-kph').value='';
+    toast('✅ बोली Firebase में सफलतापूर्वक सहेजी गई!');
+  } else {
+    toast('⚠️ Local में सहेजा — Internet जांचें');
+  }
 }
 
 /* ═══════════════════════════════════════
    SUBMIT — SHIKHAR BID
 ═══════════════════════════════════════ */
-function submitShikharBid() {
+async function submitShikharBid() {
   const si   = document.getElementById('f-sn').value;
   const name = document.getElementById('f-sname').value.trim();
   const amt  = document.getElementById('f-samt').value;
@@ -1552,20 +1544,27 @@ function submitShikharBid() {
 
   if (si==='' || !name) { toast('❌ कृपया शिखर/आरती एवं नाम भरें'); return; }
 
-  const s   = D.shikhars[parseInt(si)];
+  const s = D.shikhars[parseInt(si)];
+  if (!confirm(`${s.name}\nपरिवार: ${name}${amt ? '\nराशि: ₹'+amt : ''}\n\nक्या आप यह बोली सबमिट करना चाहते हैं?`)) return;
+
   const bid = { family:name, amount:amt||0, phone:ph, time:new Date().toISOString() };
 
+  if (!s.hist) s.hist = [];
   if (s.cur) s.hist.push(s.cur);
   s.cur = bid;
 
   save(D);
-  saveToFirebase();
+  const ok = await saveToFirebase();
   renderAdminBids();
-  document.getElementById('f-sname').value='';
-  document.getElementById('f-samt').value='';
-  document.getElementById('f-sph').value='';
-  document.getElementById('f-sn').value='';
-  toast('✅ बोली सहेजी गई!');
+  if (ok) {
+    document.getElementById('f-sname').value='';
+    document.getElementById('f-samt').value='';
+    document.getElementById('f-sph').value='';
+    document.getElementById('f-sn').value='';
+    toast('✅ बोली Firebase में सफलतापूर्वक सहेजी गई!');
+  } else {
+    toast('⚠️ Local में सहेजा — Internet जांचें');
+  }
 }
 
 /* ═══════════════════════════════════════
@@ -1681,7 +1680,7 @@ function closeEdit() {
   document.getElementById('editOverlay').classList.remove('open');
 }
 
-function saveEdit() {
+async function saveEdit() {
   if (!editState) return;
   const name = document.getElementById('e-name').value.trim();
   const amt  = document.getElementById('e-amt').value;
@@ -1713,13 +1712,13 @@ function saveEdit() {
   }
 
   save(D);
-  saveToFirebase();
+  await saveToFirebase();
   closeEdit();
   renderAdminBids();
   // Re-render view pages if active
   if (document.getElementById('page-kundis').classList.contains('active'))   renderKundis();
   if (document.getElementById('page-shikhars').classList.contains('active')) renderShikhars();
-  toast('✅ बोली अपडेट की गई!');
+  toast('✅ बोली अपडेट हो गई — Firebase में सहेजी!');
 }
 
 /* ═══════════════════════════════════════
