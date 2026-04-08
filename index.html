@@ -484,7 +484,7 @@
     <div class="tl-item done">
       <div class="tl-date">पूर्व तैयारी</div>
       <div class="tl-title">🏗️ मंदिर निर्माण एवं तैयारी</div>
-      <div class="tl-desc">श्री हनुमान जी महाराज, शिवपंचायत एवं शीतला माता मंदिर का निर्माण कार्य पूर्ण।</div>
+      <div class="tl-desc">श्री हनुमान जी महाराज, शिवपंचायत एवं चामुंडा माता मंदिर का निर्माण कार्य पूर्ण।</div>
       <span class="badge b-done">✅ पूर्ण</span>
     </div>
     <div class="tl-item">
@@ -1501,12 +1501,31 @@ async function submitKundiBid() {
   const ph   = document.getElementById('f-kph').value.trim();
 
   if (!kn || !sv || !name) { toast('❌ कृपया कुण्ड, स्लॉट एवं नाम भरें'); return; }
+  if (!amt || isNaN(parseInt(amt)) || parseInt(amt) <= 0) { toast('❌ कृपया वैध राशि दर्ज करें'); return; }
 
   const k = D.kundis[kn-1];
-  const slotLabel = sv === 'ghee' ? 'घी आहुति' : 'तिल-जौ ' + (parseInt(sv.replace('tj',''))+1);
-  if (!confirm(`कुण्ड ${kn} — ${slotLabel}\nपरिवार: ${name}${amt ? '\nराशि: ₹'+amt : ''}\n\nक्या आप यह बोली सबमिट करना चाहते हैं?`)) return;
+  const newAmt = parseInt(amt);
 
-  const bid = { family:name, amount:amt||0, phone:ph, time:new Date().toISOString() };
+  // Validate new bid > current bid for this slot
+  if (sv === 'ghee') {
+    const curAmt = k.gheeAhuti ? parseInt(k.gheeAhuti.amount) || 0 : 0;
+    if (curAmt > 0 && newAmt <= curAmt) {
+      toast(`❌ घी आहुति की मौजूदा बोली ₹${curAmt.toLocaleString('hi-IN')} है। नई बोली उससे अधिक होनी चाहिए।`);
+      return;
+    }
+  } else {
+    const idx = parseInt(sv.replace('tj',''));
+    const curAmt = k.tilJoo[idx] ? parseInt(k.tilJoo[idx].amount) || 0 : 0;
+    if (curAmt > 0 && newAmt <= curAmt) {
+      toast(`❌ तिल-जौ ${idx+1} की मौजूदा बोली ₹${curAmt.toLocaleString('hi-IN')} है। नई बोली उससे अधिक होनी चाहिए।`);
+      return;
+    }
+  }
+
+  const slotLabel = sv === 'ghee' ? 'घी आहुति' : 'तिल-जौ ' + (parseInt(sv.replace('tj',''))+1);
+  if (!confirm(`कुण्ड ${kn} — ${slotLabel}\nपरिवार: ${name}\nराशि: ₹${newAmt.toLocaleString('hi-IN')}\n\nक्या आप यह बोली सबमिट करना चाहते हैं?`)) return;
+
+  const bid = { family:name, amount:newAmt, phone:ph, time:new Date().toISOString() };
 
   if (sv === 'ghee') {
     if (k.gheeReserved) { toast('❌ यह स्लॉट ग्राम पटेल के लिए आरक्षित है'); return; }
@@ -1546,11 +1565,21 @@ async function submitShikharBid() {
   const ph   = document.getElementById('f-sph').value.trim();
 
   if (si==='' || !name) { toast('❌ कृपया शिखर/आरती एवं नाम भरें'); return; }
+  if (!amt || isNaN(parseInt(amt)) || parseInt(amt) <= 0) { toast('❌ कृपया वैध राशि दर्ज करें'); return; }
 
   const s = D.shikhars[parseInt(si)];
-  if (!confirm(`${s.name}\nपरिवार: ${name}${amt ? '\nराशि: ₹'+amt : ''}\n\nक्या आप यह बोली सबमिट करना चाहते हैं?`)) return;
+  const newAmt = parseInt(amt);
 
-  const bid = { family:name, amount:amt||0, phone:ph, time:new Date().toISOString() };
+  // Validate new bid > current bid
+  const curAmt = s.cur ? parseInt(s.cur.amount) || 0 : 0;
+  if (curAmt > 0 && newAmt <= curAmt) {
+    toast(`❌ ${s.name} की मौजूदा बोली ₹${curAmt.toLocaleString('hi-IN')} है। नई बोली उससे अधिक होनी चाहिए।`);
+    return;
+  }
+
+  if (!confirm(`${s.name}\nपरिवार: ${name}\nराशि: ₹${newAmt.toLocaleString('hi-IN')}\n\nक्या आप यह बोली सबमिट करना चाहते हैं?`)) return;
+
+  const bid = { family:name, amount:newAmt, phone:ph, time:new Date().toISOString() };
 
   if (!s.hist) s.hist = [];
   if (s.cur) s.hist.push(s.cur);
