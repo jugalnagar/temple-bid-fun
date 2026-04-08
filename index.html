@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>🕉️ श्री मंदिर उद्घाटन महोत्सव</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1087,7 +1090,7 @@ async function loadFromNpoint(id) {
 async function loadFromFirebase() {
   try {
     const ctrl = new AbortController();
-    const tid  = setTimeout(() => ctrl.abort(), 4000);
+    const tid  = setTimeout(() => ctrl.abort(), 10000);
     const res  = await fetch(FIREBASE_URL + '/data.json', { signal: ctrl.signal });
     clearTimeout(tid);
     if (res.ok) {
@@ -1781,7 +1784,7 @@ document.addEventListener('DOMContentLoaded', () => {
   (async () => {
     const fbData = await Promise.race([
       loadFromFirebase(),
-      new Promise(resolve => setTimeout(() => resolve(null), 5000)) // 5s timeout
+      new Promise(resolve => setTimeout(() => resolve(null), 12000)) // 12s timeout
     ]);
     if (fbData) {
       D = fbData;
