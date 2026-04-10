@@ -623,11 +623,6 @@
     <button class="btn btn-maroon" onclick="submitShikharBid()">✅ बोली सबमिट करें</button>
   </div>
 
-  <!-- All bids list -->
-  <div class="adm-sec">
-    <h3>📋 सभी बोलियाँ</h3>
-    <div id="allBids"><!-- JS --></div>
-  </div>
 
 </div>
 
@@ -1027,7 +1022,7 @@ async function connectSyncId() {
     const cur = JSON.parse(localStorage.getItem('syncConfig') || '{}');
     localStorage.setItem('syncConfig', JSON.stringify({ ...cur, id, token: '' }));
     D = data; save(D); syncReserved();
-    updateStats(); renderKundis(); renderShikhars(); renderAdminBids();
+    updateStats(); renderKundis(); renderShikhars();
     updateSyncUI();
     fbStatus('✅ Connected! 🎉', '#2E7D32');
     toast('✅ Sync ID connect!');
@@ -1068,7 +1063,17 @@ async function loadFromFirebase() {
     clearTimeout(tid);
     if (res.ok) {
       const data = await res.json();
-      if (data && data.v) return data;
+      if (data && data.v) {
+        // Merge any extra shikhars from Firebase not in local mkData
+        if (Array.isArray(data.shikhars) && data.shikhars.length > 4) {
+          data.shikhars = data.shikhars.map(s => ({
+            ...s,
+            hist: s.hist || [],
+            cur:  s.cur  || null
+          }));
+        }
+        return data;
+      }
     }
   } catch(e) { console.warn('Firebase load err:', e.name); }
   return null;
@@ -1169,7 +1174,7 @@ function showPage(name) {
   window.scrollTo(0,0);
   if (name === 'kundis')   renderKundis();
   if (name === 'shikhars') renderShikhars();
-  if (name === 'admin')    { renderAdminBids(); loadSettingsForm(); initKundiOpts(); loadFbConfigForm(); }
+  if (name === 'admin')    { loadSettingsForm(); initKundiOpts(); loadFbConfigForm(); }
   if (name === 'home')     updateStats();
 }
 
@@ -1278,15 +1283,16 @@ function renderKundis() {
         </div>`;
       }).join('')}</div>` : '';
 
+      const tjLabel = (k.pradhan && i === 1) ? '🍚 खीर/मिठाई' : `🌾 तिल-जौ ${i+1}`;
       return s
         ? `<div class="tj-row">
-            <span class="lbl">🌾 तिल-जौ ${i+1}</span>
+            <span class="lbl">${tjLabel}</span>
             <span class="nm">${s.family}</span>
             <span class="am">${s.amount ? '₹'+fmt(s.amount) : ''}</span>
             <span class="bd sb-filled">✓</span>
            </div>${tjHistHtml}`
         : `<div class="tj-row">
-            <span class="lbl">🌾 तिल-जौ ${i+1}</span>
+            <span class="lbl">${tjLabel}</span>
             <span class="nm" style="color:var(--textl)">खाली</span>
             <span class="bd sb-open">बोली</span>
            </div>`;
@@ -1352,74 +1358,6 @@ function renderShikhars() {
   }).join('');
 }
 
-/* ═══════════════════════════════════════
-   RENDER — ADMIN BIDS LIST
-═══════════════════════════════════════ */
-function renderAdminBids() {
-  let html = '';
-
-  D.kundis.forEach(k => {
-    // Ghee (non-reserved)
-    if (k.gheeAhuti && !k.gheeReserved) {
-      const b = k.gheeAhuti;
-      html += `<div class="abid-item cur">
-        <div class="abid-info">
-          <div class="abid-title">🔥 कुण्ड ${k.id}${k.pradhan?' ⭐':''} — घी आहुति</div>
-          <div class="abid-meta">👤 ${b.family}${b.phone?' · 📱'+b.phone:''} ${b.amount?'· ₹'+fmt(b.amount):''}</div>
-        </div>
-        <button class="btn-edit" onclick="openEdit('kundi-ghee',${k.id})">✏️ संपादित</button>
-        <button class="btn-del"  onclick="delKundi(${k.id},'ghee')">✕</button>
-      </div>`;
-    }
-    // Til-joo
-    k.tilJoo.forEach((s,i) => {
-      if (!s) return;
-      html += `<div class="abid-item cur">
-        <div class="abid-info">
-          <div class="abid-title">🌾 कुण्ड ${k.id} — तिल-जौ ${i+1}</div>
-          <div class="abid-meta">👤 ${s.family}${s.phone?' · 📱'+s.phone:''} ${s.amount?'· ₹'+fmt(s.amount):''}</div>
-        </div>
-        <button class="btn-edit" onclick="openEdit('kundi-tj',${k.id},${i})">✏️ संपादित</button>
-        <button class="btn-del"  onclick="delKundi(${k.id},'tj',${i})">✕</button>
-      </div>`;
-    });
-    // History (faded) — with edit
-    (k.history||[]).forEach((h, hi) => {
-      html += `<div class="abid-item old">
-        <div class="abid-info">
-          <div class="abid-title">📜 कुण्ड ${k.id} — ${h.st==='ghee'?'घी':'तिल-जौ'} (पुरानी)</div>
-          <div class="abid-meta">👤 ${h.family} ${h.amount?'· ₹'+fmt(h.amount):''}</div>
-        </div>
-        <button class="btn-edit" onclick="openEdit('kundi-hist',${k.id},${hi})">✏️</button>
-      </div>`;
-    });
-  });
-
-  D.shikhars.forEach(s => {
-    if (s.cur) {
-      html += `<div class="abid-item cur">
-        <div class="abid-info">
-          <div class="abid-title">${s.icon} ${s.name}</div>
-          <div class="abid-meta">👤 ${s.cur.family}${s.cur.phone?' · 📱'+s.cur.phone:''} ${s.cur.amount?'· ₹'+fmt(s.cur.amount):''}</div>
-        </div>
-        <button class="btn-edit" onclick="openEdit('shikhar',${s.id-1})">✏️ संपादित</button>
-        <button class="btn-del"  onclick="delShikhar(${s.id-1})">✕</button>
-      </div>`;
-    }
-    [...s.hist].reverse().forEach((b, ri) => {
-      const origIdx = s.hist.length - 1 - ri;
-      html += `<div class="abid-item old">
-        <div class="abid-info">
-          <div class="abid-title">📜 ${s.name} (पुरानी बोली)</div>
-          <div class="abid-meta">👤 ${b.family} ${b.amount?'· ₹'+fmt(b.amount):''}</div>
-        </div>
-        <button class="btn-edit" onclick="openEdit('shikhar-hist',${s.id-1},${origIdx})">✏️</button>
-      </div>`;
-    });
-  });
-
-  document.getElementById('allBids').innerHTML = html || `<div class="empty"><div class="ei">📋</div><p>अभी कोई बोली नहीं है</p></div>`;
-}
 
 /* ═══════════════════════════════════════
    ADMIN — KUNDI SLOT OPTIONS
@@ -1458,7 +1396,7 @@ function refreshSlotOpts() {
   k.tilJoo.forEach((s,i) => {
     const o = document.createElement('option');
     o.value = 'tj'+i;
-    o.textContent = `🌾 तिल-जौ आहुति ${i+1}${s?' ('+s.family+')':' (खाली)'}`;
+    o.textContent = (k.pradhan && i===1) ? `🍚 खीर/मिठाई${s?' ('+s.family+')':' (खाली)'}` : `🌾 तिल-जौ आहुति ${i+1}${s?' ('+s.family+')':' (खाली)'}`;
     sel.appendChild(o);
   });
 }
@@ -1495,7 +1433,8 @@ async function submitKundiBid() {
     }
   }
 
-  const slotLabel = sv === 'ghee' ? 'घी आहुति' : 'तिल-जौ ' + (parseInt(sv.replace('tj',''))+1);
+  const _tjIdx = parseInt(sv.replace('tj',''));
+  const slotLabel = sv === 'ghee' ? 'घी आहुति' : (k.pradhan && _tjIdx===1) ? 'खीर/मिठाई' : 'तिल-जौ ' + (_tjIdx+1);
   if (!confirm(`कुण्ड ${kn} — ${slotLabel}\nपरिवार: ${name}\nराशि: ₹${newAmt.toLocaleString('hi-IN')}\n\nक्या आप यह बोली सबमिट करना चाहते हैं?`)) return;
 
   const bid = { family:name, amount:newAmt, phone:ph, time:new Date().toISOString() };
@@ -1515,7 +1454,6 @@ async function submitKundiBid() {
   save(D);
   const ok = await saveToFirebase();
   refreshSlotOpts();
-  renderAdminBids();
   if (ok) {
     document.getElementById('f-kn').value='';
     document.getElementById('f-ks').innerHTML='<option value="">-- पहले कुण्ड चुनें --</option>';
@@ -1541,6 +1479,7 @@ async function submitShikharBid() {
   if (!amt || isNaN(parseInt(amt)) || parseInt(amt) <= 0) { toast('❌ कृपया वैध राशि दर्ज करें'); return; }
 
   const s = D.shikhars[parseInt(si)];
+  if (!s) { toast('❌ शिखर नहीं मिला — पेज रीफ्रेश करें'); return; }
   const newAmt = parseInt(amt);
 
   // Validate new bid > current bid
@@ -1560,7 +1499,6 @@ async function submitShikharBid() {
 
   save(D);
   const ok = await saveToFirebase();
-  renderAdminBids();
   if (ok) {
     document.getElementById('f-sname').value='';
     document.getElementById('f-samt').value='';
@@ -1585,7 +1523,7 @@ function delKundi(id, type, idx) {
     if (k.tilJoo[idx]) k.history.push({...k.tilJoo[idx], st:'tj'+idx});
     k.tilJoo[idx] = null;
   }
-  save(D); saveToFirebase(); renderAdminBids(); toast('🗑️ बोली हटाई गई');
+  save(D); saveToFirebase(); toast('🗑️ बोली हटाई गई');
 }
 
 function delShikhar(idx) {
@@ -1593,7 +1531,7 @@ function delShikhar(idx) {
   const s = D.shikhars[idx];
   if (s.cur) s.hist.push(s.cur);
   s.cur = null;
-  save(D); saveToFirebase(); renderAdminBids(); toast('🗑️ बोली हटाई गई');
+  save(D); saveToFirebase(); toast('🗑️ बोली हटाई गई');
 }
 
 /* ═══════════════════════════════════════
@@ -1624,7 +1562,7 @@ function saveSettings() {
 function resetAll() {
   if (!confirm('⚠️ सभी बोलियाँ और डेटा मिट जाएगा। निश्चित हैं?')) return;
   D = mkData(); syncReserved(); save(D); saveToFirebase();
-  renderAdminBids(); loadSettingsForm(); initKundiOpts(); updateStats();
+  loadSettingsForm(); initKundiOpts(); updateStats();
   toast('🗑️ सभी डेटा रीसेट हो गया');
 }
 
@@ -1719,7 +1657,6 @@ async function saveEdit() {
   save(D);
   await saveToFirebase();
   closeEdit();
-  renderAdminBids();
   // Re-render view pages if active
   if (document.getElementById('page-kundis').classList.contains('active'))   renderKundis();
   if (document.getElementById('page-shikhars').classList.contains('active')) renderShikhars();
@@ -1796,7 +1733,7 @@ document.addEventListener('DOMContentLoaded', () => {
       renderKundis();
       renderShikhars();
       if (document.getElementById('page-admin').classList.contains('active')) {
-        renderAdminBids(); loadSettingsForm(); initKundiOpts(); loadFbConfigForm();
+        loadSettingsForm(); initKundiOpts(); loadFbConfigForm();
       }
     }
   })();
