@@ -1781,4 +1781,23 @@ document.addEventListener('DOMContentLoaded', () => {
         loadSettingsForm(); initKundiOpts(); loadFbConfigForm();
       }
     }
-  })()
+  })();
+});
+</script>
+<!-- Admin PIN Prompt -->
+<div id="pinOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:16px;padding:28px 24px;max-width:320px;width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.3);">
+    <div style="font-size:2rem;margin-bottom:8px;">🔒</div>
+    <div style="font-size:1.1rem;font-weight:700;color:#4A0020;margin-bottom:6px;">Admin Mode</div>
+    <div style="font-size:.83rem;color:#666;margin-bottom:16px;">Admin PIN दर्ज करें</div>
+    <input type="password" id="pinInput" inputmode="numeric" maxlength="8"
+      placeholder="PIN" autocomplete="off"
+      style="width:100%;padding:12px;font-size:1.4rem;text-align:center;border:2px solid #D4500A;border-radius:10px;outline:none;letter-spacing:6px;margin-bottom:14px;"
+      onkeydown="if(event.key==='Enter')checkPin()">
+    <button onclick="checkPin()" class="btn btn-maroon" style="width:100%;font-size:1rem;">✅ Enter</button>
+    <div id="pinErr" style="color:#C62828;font-size:.8rem;margin-top:8px;"></div>
+  </div>
+</div>
+
+</body>
+</html>
