@@ -112,16 +112,69 @@
     }
     .slide-placeholder .pi { font-size: 3rem; margin-bottom: 6px; }
 
-    .countdown-card {
-      background: linear-gradient(135deg, var(--maroon), #3B0010);
-      color: #fff; border-radius: 12px; padding: 14px 12px; text-align: center;
-      margin-bottom: 14px; box-shadow: var(--shl);
+    .countdown-card { display: none; }
+
+    @keyframes msgGlow {
+      0%,100% { box-shadow: 0 0 18px 3px rgba(255,153,0,.35), 0 4px 24px rgba(0,0,0,.3); }
+      50%      { box-shadow: 0 0 32px 8px rgba(255,153,0,.6),  0 4px 24px rgba(0,0,0,.3); }
     }
-    .countdown-card h3 { font-size: .82rem; opacity: .9; margin-bottom: 9px; }
-    .cd-boxes { display: flex; justify-content: center; gap: 8px; }
-    .cd-box { background: rgba(255,255,255,.15); border-radius: 8px; padding: 8px 10px; min-width: 58px; }
-    .cd-box .n { font-size: 1.55rem; font-weight: 800; line-height: 1; }
-    .cd-box .u { font-size: .58rem; opacity: .8; margin-top: 2px; }
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(16px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    .msg-card {
+      background: linear-gradient(150deg, #7B0026 0%, #3B0010 50%, #5C1A00 100%);
+      color: #fff; border-radius: 18px; padding: 20px 16px 18px;
+      margin-bottom: 14px;
+      animation: msgGlow 2.8s ease-in-out infinite;
+      position: relative; overflow: hidden; text-align: center;
+    }
+    .msg-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        rgba(255,153,0,.04) 0px, rgba(255,153,0,.04) 2px,
+        transparent 2px, transparent 12px
+      );
+      pointer-events: none;
+    }
+    .msg-card .msg-deco {
+      font-size: 1.8rem; margin-bottom: 10px;
+      display: block; animation: spin 8s linear infinite;
+      width: fit-content; margin: 0 auto 10px;
+    }
+    .msg-card .msg-title {
+      font-size: .7rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: #FFD166;
+      margin-bottom: 14px; opacity: .9;
+    }
+    .msg-card p {
+      font-size: .86rem; line-height: 1.75; margin-bottom: 10px;
+      animation: fadeUp .6s ease both;
+      color: rgba(255,255,255,.93);
+    }
+    .msg-card p:nth-child(2) { animation-delay:.1s }
+    .msg-card p:nth-child(3) { animation-delay:.2s }
+    .msg-card p:nth-child(4) { animation-delay:.3s }
+    .msg-card p:nth-child(5) { animation-delay:.4s }
+    .msg-card .msg-divider {
+      width: 60px; height: 2px;
+      background: linear-gradient(90deg, transparent, #FFD166, transparent);
+      margin: 12px auto;
+    }
+    .msg-card .jai {
+      font-size: 1.2rem; font-weight: 900; letter-spacing: 1.5px;
+      color: #FFD166; margin-top: 4px;
+      text-shadow: 0 0 12px rgba(255,209,102,.7);
+      animation: msgGlow 1.8s ease-in-out infinite;
+      display: block;
+    }
 
     .info-card {
       background: var(--white); border-radius: 12px; padding: 14px;
@@ -438,15 +491,17 @@
     </div>
   </div>
 
-  <!-- Countdown -->
-  <div class="countdown-card">
-    <h3>🗓️ महोत्सव प्रारंभ में</h3>
-    <div class="cd-boxes">
-      <div class="cd-box"><div class="n" id="cd-d">--</div><div class="u">दिन</div></div>
-      <div class="cd-box"><div class="n" id="cd-h">--</div><div class="u">घंटे</div></div>
-      <div class="cd-box"><div class="n" id="cd-m">--</div><div class="u">मिनट</div></div>
-      <div class="cd-box"><div class="n" id="cd-s">--</div><div class="u">सेकंड</div></div>
-    </div>
+  <!-- Message -->
+  <div class="msg-card">
+    <span class="msg-deco">🕉️</span>
+    <div class="msg-title">✨ विशेष संदेश ✨</div>
+    <p>श्रद्धा का असली मोल धन से नहीं, बल्कि मन के गहरे भावों से होता है। ❤️</p>
+    <p>मंदिर की हर ईंट और यज्ञ की हर आहुति में पूरे गाँव का सामूहिक विश्वास और पसीना लगा है। 🚩</p>
+    <p>जैसे प्रभु राम की सेना में छोटी सी गिलहरी का योगदान भी अनमोल था, वैसे ही आप सबका अटूट उत्साह ही इस प्राण-प्रतिष्ठा की असली शक्ति है।</p>
+    <p>यहाँ कोई बड़ा या छोटा नहीं, हम सब केवल 'रामदूत' के विनम्र सेवक हैं। 🤝</p>
+    <p>आइये, पूरे हर्ष और उल्लास के साथ इस मंगल उत्सव को सफल बनाएँ!</p>
+    <div class="msg-divider"></div>
+    <span class="jai">जय श्री राम! 🚩🙏</span>
   </div>
 
   <!-- Event Info -->
@@ -1192,17 +1247,7 @@ setInterval(() => goSlide((curSlide + 1) % 3), 4200);
 /* ═══════════════════════════════════════
    COUNTDOWN
 ═══════════════════════════════════════ */
-function updateCD() {
-  const ds = D.settings.eventDate;
-  if (!ds) { ['d','h','m','s'].forEach(k => document.getElementById('cd-'+k).textContent='?'); return; }
-  const diff = new Date(ds+'T06:00:00') - new Date();
-  if (diff <= 0) { ['d','h','m','s'].forEach(k => document.getElementById('cd-'+k).textContent='🎉'); return; }
-  document.getElementById('cd-d').textContent = Math.floor(diff/86400000);
-  document.getElementById('cd-h').textContent = Math.floor((diff%86400000)/3600000);
-  document.getElementById('cd-m').textContent = Math.floor((diff%3600000)/60000);
-  document.getElementById('cd-s').textContent = Math.floor((diff%60000)/1000);
-}
-setInterval(updateCD, 1000); updateCD();
+
 
 /* ═══════════════════════════════════════
    STATS
@@ -1736,23 +1781,4 @@ document.addEventListener('DOMContentLoaded', () => {
         loadSettingsForm(); initKundiOpts(); loadFbConfigForm();
       }
     }
-  })();
-});
-</script>
-<!-- Admin PIN Prompt -->
-<div id="pinOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center;">
-  <div style="background:#fff;border-radius:16px;padding:28px 24px;max-width:320px;width:90%;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.3);">
-    <div style="font-size:2rem;margin-bottom:8px;">🔒</div>
-    <div style="font-size:1.1rem;font-weight:700;color:#4A0020;margin-bottom:6px;">Admin Mode</div>
-    <div style="font-size:.83rem;color:#666;margin-bottom:16px;">Admin PIN दर्ज करें</div>
-    <input type="password" id="pinInput" inputmode="numeric" maxlength="8"
-      placeholder="PIN" autocomplete="off"
-      style="width:100%;padding:12px;font-size:1.4rem;text-align:center;border:2px solid #D4500A;border-radius:10px;outline:none;letter-spacing:6px;margin-bottom:14px;"
-      onkeydown="if(event.key==='Enter')checkPin()">
-    <button onclick="checkPin()" class="btn btn-maroon" style="width:100%;font-size:1rem;">✅ Enter</button>
-    <div id="pinErr" style="color:#C62828;font-size:.8rem;margin-top:8px;"></div>
-  </div>
-</div>
-
-</body>
-</html>
+  })()
